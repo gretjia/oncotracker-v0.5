@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project specific
+*.xlsx
+!dataset251130_2.xlsx
+!dataset251130.xlsx
+!dataset_update.xlsx
+!sample_dataset.xlsx
+!formal_dataset.xlsx
+# We might want to keep the datasets if they are not sensitive, but usually data is ignored.
+# User asked to "load the new dataset", implying it's part of the project usage.
+# I'll include the xlsx files present in the directory as they seem to be the "database" for this app.
+# Reverting the ignore for xlsx, but maybe ignore temporary ones.
+~$*.xlsx
+
+# Logs
+*.log

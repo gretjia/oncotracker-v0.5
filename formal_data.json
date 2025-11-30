@@ -1,0 +1,690 @@
+{
+    "FormalDataset": [
+        {},
+        {
+            "Unnamed: 0": "肿瘤病程周期表"
+        },
+        {
+            "Unnamed: 0": "分类",
+            "Unnamed: 1": "节拍",
+            "Unnamed: 5": "事件",
+            "Unnamed: 7": "体能负荷",
+            "Unnamed: 10": "分子负荷",
+            "Unnamed: 20": "影像负荷",
+            "Unnamed: 24": "副作用"
+        },
+        {
+            "Unnamed: 0": "子类",
+            "Unnamed: 1": "项目",
+            "Unnamed: 2": "周期",
+            "Unnamed: 4": "方案",
+            "Unnamed: 5": "处置",
+            "Unnamed: 6": "方案",
+            "Unnamed: 7": "体重",
+            "Unnamed: 8": "握力",
+            "Unnamed: 9": "ECOG",
+            "Unnamed: 10": "MRD",
+            "Unnamed: 11": "aMRD",
+            "Unnamed: 12": "CEA",
+            "Unnamed: 13": "HE4",
+            "Unnamed: 14": "CA19-9",
+            "Unnamed: 15": "CA724",
+            "Unnamed: 16": "ROMA绝经后指数",
+            "Unnamed: 17": "ROMA绝经前指数",
+            "Unnamed: 18": "CA125",
+            "Unnamed: 19": "AFP",
+            "Unnamed: 20": "肺",
+            "Unnamed: 21": "肝脏",
+            "Unnamed: 22": "淋巴",
+            "Unnamed: 23": "盆腔",
+            "Unnamed: 24": "白细胞",
+            "Unnamed: 25": "血小板",
+            "Unnamed: 26": "中性粒细胞",
+            "Unnamed: 27": "谷草转氨酶",
+            "Unnamed: 28": "谷丙转氨酶"
+        },
+        {
+            "Unnamed: 0": "日期\\单位",
+            "Unnamed: 2": "当下周期",
+            "Unnamed: 3": "前序周期",
+            "Unnamed: 7": "KG",
+            "Unnamed: 8": "KG",
+            "Unnamed: 10": "mtm/ml",
+            "Unnamed: 11": "mtm/ml",
+            "Unnamed: 12": "<5",
+            "Unnamed: 13": "<76.2",
+            "Unnamed: 14": "<27",
+            "Unnamed: 15": "<8.94",
+            "Unnamed: 16": "<29.9",
+            "Unnamed: 17": "<11.4",
+            "Unnamed: 18": "<35",
+            "Unnamed: 19": "<7",
+            "Unnamed: 20": "mm",
+            "Unnamed: 21": "mm",
+            "Unnamed: 22": "mm",
+            "Unnamed: 23": "mm"
+        },
+        {
+            "Unnamed: 0": "2024-06-06 00:00:00",
+            "Unnamed: 1": "腹腔镜探查",
+            "Unnamed: 2": "C0D1",
+            "Unnamed: 5": "腹腔镜探查",
+            "Unnamed: 7": "45.6"
+        },
+        {
+            "Unnamed: 0": "2024-06-06 00:00:00",
+            "Unnamed: 5": "热灌注",
+            "Unnamed: 6": "Paclitaxel 90mg"
+        },
+        {
+            "Unnamed: 0": "2024-06-07 00:00:00",
+            "Unnamed: 5": "热灌注",
+            "Unnamed: 6": "Oxaliplatin"
+        },
+        {
+            "Unnamed: 0": "2024-06-11 00:00:00",
+            "Unnamed: 5": "热灌注",
+            "Unnamed: 6": "Paclitaxel "
+        },
+        {
+            "Unnamed: 0": "2024-06-18 00:00:00",
+            "Unnamed: 10": "2.88"
+        },
+        {
+            "Unnamed: 0": "2024-07-03 00:00:00",
+            "Unnamed: 1": "腹腔镜探查",
+            "Unnamed: 5": "腹腔镜探查",
+            "Unnamed: 7": "45"
+        },
+        {
+            "Unnamed: 0": "2024-07-17 00:00:00",
+            "Unnamed: 10": "29.87"
+        },
+        {
+            "Unnamed: 0": "2024-07-18 00:00:00",
+            "Unnamed: 12": "1.24",
+            "Unnamed: 13": "50.7",
+            "Unnamed: 14": "18",
+            "Unnamed: 18": "35.1",
+            "Unnamed: 19": "0.91"
+        },
+        {
+            "Unnamed: 0": "2024-07-20 00:00:00",
+            "Unnamed: 1": "新辅助",
+            "Unnamed: 2": "C1D1",
+            "Unnamed: 4": "Nab-Paclitaxel 300mg & Oxaliplatin 130mg & Cadonilimab 375mg",
+            "Unnamed: 7": "44.5"
+        },
+        {
+            "Unnamed: 0": "2024-08-04 00:00:00",
+            "Unnamed: 10": "1.82"
+        },
+        {
+            "Unnamed: 0": "2024-08-09 00:00:00",
+            "Unnamed: 1": "新辅助",
+            "Unnamed: 2": "C2D1",
+            "Unnamed: 3": "C1D21",
+            "Unnamed: 4": "Nab-Paclitaxel 300mg & Oxaliplatin 130mg &Cadonilimab 375mg",
+            "Unnamed: 7": "44.5",
+            "Unnamed: 12": "1.54",
+            "Unnamed: 13": "58.3",
+            "Unnamed: 14": "20.9",
+            "Unnamed: 18": "25.7",
+            "Unnamed: 19": "0.91"
+        },
+        {
+            "Unnamed: 0": "2024-08-10 00:00:00",
+            "Unnamed: 2": "C2D2",
+            "Unnamed: 10": "2.22"
+        },
+        {
+            "Unnamed: 0": "2024-08-28 00:00:00",
+            "Unnamed: 2": "C2D20",
+            "Unnamed: 10": "1.85"
+        },
+        {
+            "Unnamed: 0": "2024-08-30 00:00:00",
+            "Unnamed: 1": "新辅助",
+            "Unnamed: 2": " C3D1",
+            "Unnamed: 3": "C2D22",
+            "Unnamed: 4": "Nab-Paclitaxel 330mg & Oxaliplatin 150mg &Cadonilimab 375mg",
+            "Unnamed: 7": "45",
+            "Unnamed: 12": "2.47",
+            "Unnamed: 13": "54.5",
+            "Unnamed: 14": "32.7",
+            "Unnamed: 18": "22.5",
+            "Unnamed: 19": "0.91"
+        },
+        {
+            "Unnamed: 0": "2024-09-18 00:00:00",
+            "Unnamed: 2": " C3D20",
+            "Unnamed: 10": "2.4"
+        },
+        {
+            "Unnamed: 0": "2024-09-19 00:00:00",
+            "Unnamed: 1": "新辅助",
+            "Unnamed: 2": "C4D1",
+            "Unnamed: 3": "C3D21",
+            "Unnamed: 4": "Nab-Paclitaxel 330mg & Oxaliplatin 150mg &Cadonilimab 375mg",
+            "Unnamed: 12": "2.11",
+            "Unnamed: 13": "58.2",
+            "Unnamed: 14": "36",
+            "Unnamed: 18": "17.1",
+            "Unnamed: 19": "1.02"
+        },
+        {
+            "Unnamed: 0": "2024-09-20 00:00:00",
+            "Unnamed: 7": "46"
+        },
+        {
+            "Unnamed: 0": "2024-10-11 00:00:00",
+            "Unnamed: 2": "C4D22",
+            "Unnamed: 7": "46",
+            "Unnamed: 10": "1.25"
+        },
+        {
+            "Unnamed: 0": "2024-10-12 00:00:00",
+            "Unnamed: 1": "新辅助",
+            "Unnamed: 2": "C5D1",
+            "Unnamed: 3": "C4D23",
+            "Unnamed: 4": "Nab-Paclitaxel 330mg & Oxaliplatin 150mg &Cadonilimab 375mg",
+            "Unnamed: 12": "2.15",
+            "Unnamed: 13": "59.9",
+            "Unnamed: 14": "36.6",
+            "Unnamed: 16": "13.89",
+            "Unnamed: 17": "11.41",
+            "Unnamed: 18": "14.2",
+            "Unnamed: 19": "1.07"
+        },
+        {
+            "Unnamed: 0": "2024-10-31 00:00:00",
+            "Unnamed: 2": "C5D20",
+            "Unnamed: 10": "2.86"
+        },
+        {
+            "Unnamed: 0": "2024-11-01 00:00:00",
+            "Unnamed: 1": "新辅助",
+            "Unnamed: 2": "C6D1",
+            "Unnamed: 3": "C5D21",
+            "Unnamed: 4": "Nab-Paclitaxel 350mg & Oxaliplatin 150mg  & Nivolumab 360mg",
+            "Unnamed: 7": "45",
+            "Unnamed: 12": "2.86",
+            "Unnamed: 13": "82.4",
+            "Unnamed: 14": "44.2",
+            "Unnamed: 16": "18.85",
+            "Unnamed: 17": "21.45",
+            "Unnamed: 18": "15",
+            "Unnamed: 19": "1.29"
+        },
+        {
+            "Unnamed: 0": "2024-11-20 00:00:00",
+            "Unnamed: 2": "C6D20",
+            "Unnamed: 10": "1.78"
+        },
+        {
+            "Unnamed: 0": "2024-11-22 00:00:00",
+            "Unnamed: 1": "新辅助",
+            "Unnamed: 2": "C7D1",
+            "Unnamed: 3": "C6D22",
+            "Unnamed: 4": "Nab-Paclitaxel 350mg & Oxaliplatin 150mg  & Nivolumab 360mg",
+            "Unnamed: 7": "43",
+            "Unnamed: 12": "2.14",
+            "Unnamed: 13": "63.3",
+            "Unnamed: 14": "45.4",
+            "Unnamed: 16": "14.7",
+            "Unnamed: 17": "12.79",
+            "Unnamed: 18": "14.4",
+            "Unnamed: 19": "1.09"
+        },
+        {
+            "Unnamed: 0": "2024-12-11 00:00:00",
+            "Unnamed: 2": "C7D20",
+            "Unnamed: 10": "2.62"
+        },
+        {
+            "Unnamed: 0": "2024-12-13 00:00:00",
+            "Unnamed: 1": "新辅助",
+            "Unnamed: 2": "C8D1",
+            "Unnamed: 3": "C7D22",
+            "Unnamed: 4": "Nab-Paclitaxel 350mg & Oxaliplatin 150mg  & Nivolumab 360mg",
+            "Unnamed: 7": "44",
+            "Unnamed: 12": "2.18",
+            "Unnamed: 13": "76.9",
+            "Unnamed: 14": "46.5",
+            "Unnamed: 16": "18.12",
+            "Unnamed: 17": "18.87",
+            "Unnamed: 18": "15.5",
+            "Unnamed: 19": "1.2"
+        },
+        {
+            "Unnamed: 0": "2025-01-02 00:00:00",
+            "Unnamed: 2": "C8D21",
+            "Unnamed: 10": "3.79"
+        },
+        {
+            "Unnamed: 0": "2025-01-15 00:00:00",
+            "Unnamed: 1": "腹腔镜探查",
+            "Unnamed: 2": "C8D34",
+            "Unnamed: 5": "腹腔镜探查"
+        },
+        {
+            "Unnamed: 0": "2025-01-15 00:00:00",
+            "Unnamed: 1": "胃癌根治术",
+            "Unnamed: 2": "C8D34",
+            "Unnamed: 3": "AS0",
+            "Unnamed: 5": "胃癌根治术",
+            "Unnamed: 7": "46"
+        },
+        {
+            "Unnamed: 0": "2025-02-01 00:00:00",
+            "Unnamed: 2": "C8D51",
+            "Unnamed: 3": "AS17",
+            "Unnamed: 10": "4.38"
+        },
+        {
+            "Unnamed: 0": "2025-02-15 00:00:00",
+            "Unnamed: 2": "C8D65",
+            "Unnamed: 3": "AS31",
+            "Unnamed: 10": "13.82"
+        },
+        {
+            "Unnamed: 0": "2025-02-19 00:00:00",
+            "Unnamed: 2": "C8D69",
+            "Unnamed: 12": "1.9",
+            "Unnamed: 13": "164",
+            "Unnamed: 14": "33.7",
+            "Unnamed: 16": "60.32",
+            "Unnamed: 17": "60.48",
+            "Unnamed: 18": "78",
+            "Unnamed: 19": "1.29"
+        },
+        {
+            "Unnamed: 0": "2025-02-26 00:00:00",
+            "Unnamed: 2": "C8D76",
+            "Unnamed: 11": "111.96"
+        },
+        {
+            "Unnamed: 0": "2025-02-26 00:00:00",
+            "Unnamed: 1": "腹腔镜",
+            "Unnamed: 2": "C8D76",
+            "Unnamed: 3": "AS42",
+            "Unnamed: 5": "腹腔镜探查"
+        },
+        {
+            "Unnamed: 0": "2025-02-26 00:00:00",
+            "Unnamed: 2": "C8D76",
+            "Unnamed: 3": "AS42",
+            "Unnamed: 5": "热灌注",
+            "Unnamed: 6": "Docetaxel 60mg&5-FU 2g"
+        },
+        {
+            "Unnamed: 0": "2025-02-27 00:00:00",
+            "Unnamed: 2": "C8D77",
+            "Unnamed: 3": "AS43",
+            "Unnamed: 5": "热灌注",
+            "Unnamed: 6": "Docetaxel 20mg&5-FU 2g"
+        },
+        {
+            "Unnamed: 0": "2025-02-28 00:00:00",
+            "Unnamed: 2": "C8D78",
+            "Unnamed: 3": "AS44",
+            "Unnamed: 5": "热灌注",
+            "Unnamed: 6": "Docetaxel 20mg&5-FU 2g"
+        },
+        {
+            "Unnamed: 0": "2025-03-01 00:00:00",
+            "Unnamed: 2": "C8D79",
+            "Unnamed: 3": "AS45",
+            "Unnamed: 5": "热灌注",
+            "Unnamed: 6": "生理氯化钠3000ml"
+        },
+        {
+            "Unnamed: 0": "2025-03-04 00:00:00",
+            "Unnamed: 1": "FDA 505b",
+            "Unnamed: 2": "C8D82",
+            "Unnamed: 3": "AS48",
+            "Unnamed: 4": "启动Mebendazole 600mg/d PO bid ，continuous非医嘱"
+        },
+        {
+            "Unnamed: 0": "2025-03-12 00:00:00",
+            "Unnamed: 1": "辅助",
+            "Unnamed: 2": "C1D1",
+            "Unnamed: 3": "C8D90",
+            "Unnamed: 4": "Nab-Paclitaxel 180mg&Nivolumab 240mg&CF 500mg&5-FU 500mg+ 3000mg CIV46h",
+            "Unnamed: 12": "3.06",
+            "Unnamed: 13": "136",
+            "Unnamed: 14": "37",
+            "Unnamed: 16": "45.82",
+            "Unnamed: 17": "48.74",
+            "Unnamed: 18": "45.2",
+            "Unnamed: 19": "3.63"
+        },
+        {
+            "Unnamed: 0": "2025-03-14 00:00:00",
+            "Unnamed: 7": "40"
+        },
+        {
+            "Unnamed: 0": "2025-03-27 00:00:00",
+            "Unnamed: 2": "C1D16",
+            "Unnamed: 12": "2.32",
+            "Unnamed: 13": "106",
+            "Unnamed: 14": "46.8",
+            "Unnamed: 16": "43.77",
+            "Unnamed: 17": "34.89",
+            "Unnamed: 18": "57.6",
+            "Unnamed: 19": "3.68"
+        },
+        {
+            "Unnamed: 0": "2025-03-28 00:00:00",
+            "Unnamed: 1": "辅助",
+            "Unnamed: 2": "C2D1",
+            "Unnamed: 3": "C1D17",
+            "Unnamed: 4": "Nab-Paclitaxel 180mg& Nivolumab 240mg&CF 500mg&5-FU 500mg+ 3000mg CIV46h"
+        },
+        {
+            "Unnamed: 0": "2025-03-30 00:00:00",
+            "Unnamed: 7": "37.5"
+        },
+        {
+            "Unnamed: 0": "2025-04-11 00:00:00",
+            "Unnamed: 2": "C2D15",
+            "Unnamed: 7": "37.5",
+            "Unnamed: 12": "6.05",
+            "Unnamed: 13": "123",
+            "Unnamed: 14": "35.7",
+            "Unnamed: 16": "31.8",
+            "Unnamed: 17": "41.83",
+            "Unnamed: 18": "22.6",
+            "Unnamed: 19": "3.03"
+        },
+        {
+            "Unnamed: 0": "2025-04-12 00:00:00",
+            "Unnamed: 1": "辅助",
+            "Unnamed: 2": "C3D1",
+            "Unnamed: 3": "C2D16",
+            "Unnamed: 4": "Nab-Paclitaxel 180mg&Nivolumab 240mg&CF 500mg&5-FU 500mg+ 3000mg CIV46h"
+        },
+        {
+            "Unnamed: 0": "2025-04-24 00:00:00",
+            "Unnamed: 2": "C3D13",
+            "Unnamed: 7": "38.5",
+            "Unnamed: 12": "6.32",
+            "Unnamed: 13": "89.32",
+            "Unnamed: 14": "25.35",
+            "Unnamed: 16": "17.35",
+            "Unnamed: 17": "27.76",
+            "Unnamed: 18": "11.44",
+            "Unnamed: 19": "4.28"
+        },
+        {
+            "Unnamed: 0": "2025-04-25 00:00:00",
+            "Unnamed: 2": "C3D14",
+            "Unnamed: 10": "0.2"
+        },
+        {
+            "Unnamed: 0": "2025-04-26 00:00:00",
+            "Unnamed: 1": "辅助",
+            "Unnamed: 2": "C4D1",
+            "Unnamed: 3": "C3D15",
+            "Unnamed: 4": "Nab-Paclitaxel 180mg&Nivolumab 240mg&CF 500mg&5-FU 500mg+ 2500mg CIV46h"
+        },
+        {
+            "Unnamed: 0": "2025-05-12 00:00:00",
+            "Unnamed: 2": "C4D17",
+            "Unnamed: 12": "4.35",
+            "Unnamed: 13": "278.87",
+            "Unnamed: 14": "27.39",
+            "Unnamed: 16": "41.72",
+            "Unnamed: 17": "100.19",
+            "Unnamed: 18": "12.33",
+            "Unnamed: 19": "3.64"
+        },
+        {
+            "Unnamed: 0": "2025-05-13 00:00:00",
+            "Unnamed: 1": "辅助",
+            "Unnamed: 2": "C5D1",
+            "Unnamed: 3": "C4D18",
+            "Unnamed: 4": "Nab-Paclitaxel 180mg&CF 500mg&5-FU 500mg+2500mg CIV46h"
+        },
+        {
+            "Unnamed: 0": "2025-05-29 00:00:00",
+            "Unnamed: 2": "C5D17",
+            "Unnamed: 7": "38.7",
+            "Unnamed: 12": "7.23",
+            "Unnamed: 13": "143.29",
+            "Unnamed: 14": "23",
+            "Unnamed: 16": "27.11",
+            "Unnamed: 17": "57.81",
+            "Unnamed: 18": "12.97",
+            "Unnamed: 19": "4.28"
+        },
+        {
+            "Unnamed: 0": "2025-05-30 00:00:00",
+            "Unnamed: 1": "辅助",
+            "Unnamed: 2": "C6D1",
+            "Unnamed: 3": "C5D18",
+            "Unnamed: 4": "Nab-Paclitaxel 180mg&Nivolumab 240mg&CF 500mg&5-FU 500mg+ 2500mg CIV46h"
+        },
+        {
+            "Unnamed: 0": "2025-06-11 00:00:00",
+            "Unnamed: 2": "C6D13",
+            "Unnamed: 7": "37.5"
+        },
+        {
+            "Unnamed: 0": "2025-06-12 00:00:00",
+            "Unnamed: 1": "FDA505b",
+            "Unnamed: 2": "C6D14",
+            "Unnamed: 4": "启动Mebendazole 600mg/d PO bid，continuous非医嘱",
+            "Unnamed: 10": "0.16",
+            "Unnamed: 12": "10.65",
+            "Unnamed: 13": "136.4",
+            "Unnamed: 14": "24.07",
+            "Unnamed: 16": "27.72",
+            "Unnamed: 17": "54.1",
+            "Unnamed: 18": "14.62",
+            "Unnamed: 19": "1.69"
+        },
+        {
+            "Unnamed: 0": "2025-06-13 00:00:00",
+            "Unnamed: 1": "辅助",
+            "Unnamed: 2": "C7D1",
+            "Unnamed: 3": "C6D15",
+            "Unnamed: 4": "Nab-Paclitaxel 180mg&Nivolumab 240mg&CF 500mg&5-FU 500mg+ 2500mg CIV46h"
+        },
+        {
+            "Unnamed: 0": "2025-06-28 00:00:00",
+            "Unnamed: 2": "C7D16",
+            "Unnamed: 12": "12.41",
+            "Unnamed: 13": "129.27",
+            "Unnamed: 14": "29.1",
+            "Unnamed: 16": "30.06",
+            "Unnamed: 17": "50.01",
+            "Unnamed: 18": "18.68",
+            "Unnamed: 19": "2.86"
+        },
+        {
+            "Unnamed: 0": "2025-06-29 00:00:00",
+            "Unnamed: 1": "FDA505b",
+            "Unnamed: 2": "C7D17",
+            "Unnamed: 4": "启动Mebendazole 900mg/d PO tid，continuous 非医嘱",
+            "Unnamed: 7": "37.2"
+        },
+        {
+            "Unnamed: 0": "2025-06-30 00:00:00",
+            "Unnamed: 1": "辅助",
+            "Unnamed: 2": "C8D1",
+            "Unnamed: 3": "C7D18",
+            "Unnamed: 4": "Nab-Paclitaxel 180mg&CF 500mg&5-FU 500mg+2500mg CIV46h"
+        },
+        {
+            "Unnamed: 0": "2025-07-12 00:00:00",
+            "Unnamed: 2": "C8D13",
+            "Unnamed: 10": "0.37"
+        },
+        {
+            "Unnamed: 0": "2025-07-19 00:00:00",
+            "Unnamed: 2": "C8D20",
+            "Unnamed: 7": "37.9",
+            "Unnamed: 12": "8.03",
+            "Unnamed: 13": "101.23",
+            "Unnamed: 14": "24.6",
+            "Unnamed: 16": "27.79",
+            "Unnamed: 17": "34.23",
+            "Unnamed: 18": "22.89",
+            "Unnamed: 19": "4.56"
+        },
+        {
+            "Unnamed: 0": "2025-07-21 00:00:00",
+            "Unnamed: 1": "辅助",
+            "Unnamed: 2": "C9D1",
+            "Unnamed: 3": "C8D22",
+            "Unnamed: 4": "Nab-Paclitaxel 180mg&Nivolumab 240mg&CF 500mg&5-FU 500mg+ 2500mg CIV46h"
+        },
+        {
+            "Unnamed: 0": "2025-08-20 00:00:00",
+            "Unnamed: 7": "37"
+        },
+        {
+            "Unnamed: 0": "2025-08-22 00:00:00",
+            "Unnamed: 2": "C9D33",
+            "Unnamed: 10": "1.9"
+        },
+        {
+            "Unnamed: 0": "2025-08-30 00:00:00",
+            "Unnamed: 7": "36"
+        },
+        {
+            "Unnamed: 0": "2025-09-03 00:00:00",
+            "Unnamed: 2": "C9D45",
+            "Unnamed: 12": "8.18",
+            "Unnamed: 14": "42.07",
+            "Unnamed: 18": "32.75",
+            "Unnamed: 19": "1.31"
+        },
+        {
+            "Unnamed: 0": "2025-09-04 00:00:00",
+            "Unnamed: 7": "35.9"
+        },
+        {
+            "Unnamed: 0": "2025-09-19 00:00:00",
+            "Unnamed: 1": "辅助",
+            "Unnamed: 2": "C10D1",
+            "Unnamed: 3": "C9D61",
+            "Unnamed: 4": "Sac-TMT 185mg",
+            "Unnamed: 7": "37.5",
+            "Unnamed: 10": "15.91"
+        },
+        {
+            "Unnamed: 0": "2025-09-25 00:00:00",
+            "Unnamed: 2": "C10D7",
+            "Unnamed: 11": "28.93"
+        },
+        {
+            "Unnamed: 0": "2025-09-26 00:00:00",
+            "Unnamed: 2": "C10D8",
+            "Unnamed: 10": "15.74"
+        },
+        {
+            "Unnamed: 0": "2025-09-30 00:00:00",
+            "Unnamed: 1": "辅助",
+            "Unnamed: 2": "C10D12",
+            "Unnamed: 4": "Nivolumab 240mg"
+        },
+        {
+            "Unnamed: 0": "2025-10-01 00:00:00",
+            "Unnamed: 1": "FDA505b",
+            "Unnamed: 2": "C10D13",
+            "Unnamed: 4": "启动Mebendazole 600mg/d PO bid，continuous非医嘱"
+        },
+        {
+            "Unnamed: 0": "2025-10-04 00:00:00",
+            "Unnamed: 7": "36"
+        },
+        {
+            "Unnamed: 0": "2025-10-07 00:00:00",
+            "Unnamed: 8": "18.7"
+        },
+        {
+            "Unnamed: 0": "2025-10-10 00:00:00",
+            "Unnamed: 2": "C10D22",
+            "Unnamed: 7": "36",
+            "Unnamed: 10": "71.12",
+            "Unnamed: 12": "9.03",
+            "Unnamed: 13": "112.42",
+            "Unnamed: 14": "41.62",
+            "Unnamed: 16": "57.2",
+            "Unnamed: 17": "39.09",
+            "Unnamed: 18": "111.89",
+            "Unnamed: 19": "1.78"
+        },
+        {
+            "Unnamed: 0": "2025-10-11 00:00:00",
+            "Unnamed: 1": "辅助",
+            "Unnamed: 2": "C11D1",
+            "Unnamed: 3": "C10D23",
+            "Unnamed: 4": "Sac-TMT180mg&5-FU500mg+2500mg(48h)& Na-LV250mg"
+        },
+        {
+            "Unnamed: 0": "2025-10-18 00:00:00",
+            "Unnamed: 1": "辅助",
+            "Unnamed: 2": "C11D8",
+            "Unnamed: 4": "Nivolumab 240mg"
+        },
+        {
+            "Unnamed: 0": "2025-10-24 00:00:00",
+            "Unnamed: 2": "C11D14",
+            "Unnamed: 7": "35.5",
+            "Unnamed: 8": "21",
+            "Unnamed: 10": "13.37"
+        },
+        {
+            "Unnamed: 0": "2025-10-25 00:00:00",
+            "Unnamed: 1": "辅助",
+            "Unnamed: 2": "C12D1",
+            "Unnamed: 3": "C11D15",
+            "Unnamed: 4": "Sac-TMT180mg&5-FU500mg+2500mg(48h)& Na-LV250mg"
+        },
+        {
+            "Unnamed: 0": "2025-10-25 00:00:00",
+            "Unnamed: 2": "C12D1",
+            "Unnamed: 4": "启动服用醋酸甲地孕酮 5ml/d PO qd continuous",
+            "Unnamed: 12": "10.23",
+            "Unnamed: 13": "95.54",
+            "Unnamed: 14": "56.01",
+            "Unnamed: 16": "47.47",
+            "Unnamed: 17": "30.29",
+            "Unnamed: 18": "82.15",
+            "Unnamed: 19": "2.93"
+        },
+        {
+            "Unnamed: 0": "2025-10-31 00:00:00",
+            "Unnamed: 1": "辅助",
+            "Unnamed: 2": "C12D7",
+            "Unnamed: 3": "C12D07",
+            "Unnamed: 4": "Nivolumab 240mg"
+        },
+        {
+            "Unnamed: 0": "2025-11-13 00:00:00",
+            "Unnamed: 7": "36.55",
+            "Unnamed: 8": "18.95"
+        },
+        {
+            "Unnamed: 0": "2025-11-19 00:00:00",
+            "Unnamed: 2": "C12D29",
+            "Unnamed: 4": "启动一周两次注射胸腺法新1.6mg(日达仙)，continuous"
+        },
+        {
+            "Unnamed: 0": "2025-11-23 00:00:00",
+            "Unnamed: 2": "C12D33",
+            "Unnamed: 12": "5.86",
+            "Unnamed: 14": "82.93",
+            "Unnamed: 15": "2.22"
+        },
+        {
+            "Unnamed: 0": "2025-11-24 00:00:00",
+            "Unnamed: 2": "C12D34",
+            "Unnamed: 13": "99.9",
+            "Unnamed: 18": "45.61"
+        }
+    ]
+}
