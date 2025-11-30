@@ -9,9 +9,8 @@ import { Activity, Users, Search, Plus, LogOut, FileSpreadsheet } from 'lucide-r
 export default function DoctorDashboard() {
     // Mock Data
     const patients = [
-        { id: 1, name: "Jane Doe", mrn: "MRN-8821", status: "Active Treatment", lastVisit: "Nov 28, 2024" },
+        { id: 1, name: "张莉 (Zhang Li)", mrn: "MRN-ZHANG-001", status: "Active Treatment", lastVisit: "Nov 30, 2024" },
         { id: 2, name: "John Smith", mrn: "MRN-9932", status: "Observation", lastVisit: "Oct 15, 2024" },
-        { id: 3, name: "Emily Chen", mrn: "MRN-1102", status: "Post-Op", lastVisit: "Nov 30, 2024" },
     ];
 
     return (
@@ -25,7 +24,7 @@ export default function DoctorDashboard() {
                     <span className="font-bold text-slate-800 text-lg">OncoTracker <span className="text-emerald-600 text-xs ml-1 bg-emerald-100 px-2 py-0.5 rounded-full">Provider</span></span>
                 </div>
                 <div className="flex items-center gap-4">
-                    <span className="text-slate-600 text-sm">Dr. Smith</span>
+                    <span className="text-slate-600 text-sm">Dr. SciX</span>
                     <Link href="/">
                         <Button variant="ghost" size="sm" className="text-slate-500 hover:text-red-600">
                             <LogOut className="w-4 h-4 mr-2" /> Sign Out

@@ -53,13 +53,13 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-600">
                 <Stethoscope className="w-8 h-8" />
               </div>
-              <CardTitle className="text-2xl text-slate-800">Provider Portal</CardTitle>
-              <CardDescription>For Doctors, Nurses, and Case Managers</CardDescription>
+              <CardTitle className="text-2xl text-slate-800">Doctor Portal</CardTitle>
+              <CardDescription>For Doctors and Medical Staff</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3 pt-4">
               <Link href="/auth/login?role=doctor" className="w-full">
                 <Button variant="outline" className="w-full h-12 text-lg border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800 hover:border-emerald-300">
-                  Provider Login
+                  Doctor Login
                 </Button>
               </Link>
               <div className="text-center text-sm text-slate-500 mt-2">

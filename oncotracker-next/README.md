@@ -40,6 +40,30 @@ Advanced patient journey visualization and management platform for modern oncolo
 4. **Open Application**:
     Navigate to [http://localhost:3000](http://localhost:3000).
 
+## Initial User Accounts
+
+For development and testing, the following accounts are available via mock authentication:
+
+### Doctor Account
+
+- **Email**: `scix@oncotracker.com`
+- **Password**: `Zx987@`
+- **Access**: Doctor Dashboard with patient "张莉 (Zhang Li)"
+
+### Patient Account
+
+- **Email**: `zhangli@oncotracker.com`
+- **Password**: *(any password works in demo mode)*
+- **Access**: Patient Dashboard showing Dr. SciX as assigned doctor
+
+### Supervisor Account
+
+- **Email**: `admin@oncotracker.com`
+- **Password**: `OncoSciX@`
+- **Access**: Supervisor Dashboard for user management
+
+> **Note**: For production deployment, use `scripts/seed_users.sql` to create these users in Supabase with proper authentication.
+
 ## Project Structure
 
 - `app/`: Next.js App Router pages and layouts.

@@ -7,8 +7,8 @@ import { Activity, User, Calendar, FileText, LogOut } from 'lucide-react';
 
 export default function PatientDashboard() {
     // Mock Data
-    const patientName = "Jane Doe";
-    const assignedDoctor = "Dr. Smith";
+    const patientName = "张莉 (Zhang Li)";
+    const assignedDoctor = "Dr. SciX";
     const nextAppointment = "Dec 15, 2024 at 10:00 AM";
 
     return (
@@ -54,7 +54,7 @@ export default function PatientDashboard() {
                             </div>
                             <div className="flex justify-between border-b pb-2">
                                 <span className="text-slate-500">MRN</span>
-                                <span className="font-medium">MRN-8821</span>
+                                <span className="font-medium">MRN-ZHANG-001</span>
                             </div>
                             <div className="flex justify-between pt-2">
                                 <span className="text-slate-500">Doctor</span>
@@ -132,7 +132,7 @@ export default function PatientDashboard() {
                         </CardContent>
                     </Card>
                 </div>
-            </main>
-        </div>
+            </main >
+        </div >
     );
 }

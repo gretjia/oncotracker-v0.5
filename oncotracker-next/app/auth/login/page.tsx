@@ -21,18 +21,50 @@ function LoginForm() {
         e.preventDefault();
         setIsLoading(true);
 
-        // TODO: Implement actual Supabase auth here
+        // Mock Authentication Logic
         console.log("Logging in as", role, email, password);
 
         // Simulate delay
         setTimeout(() => {
             setIsLoading(false);
-            // Mock redirect based on role
+
+            // Hardcoded Credentials Check
+            if (role === 'doctor') {
+                if (email === 'scix@oncotracker.com' && password === 'Zx987@') {
+                    router.push('/dashboard/doctor');
+                    return;
+                }
+            } else if (role === 'supervisor') {
+                if (email === 'admin@oncotracker.com' && password === 'OncoSciX@') {
+                    router.push('/dashboard/supervisor');
+                    return;
+                }
+            } else if (role === 'patient') {
+                // Allow generic login for patient demo, or specific
+                if (email === 'zhangli@oncotracker.com') {
+                    router.push('/dashboard/patient');
+                    return;
+                }
+            }
+
+            // Fallback for demo (if credentials don't match specific ones, still allow for testing if needed, or show error)
+            // For now, let's strictly enforce the requested ones or default to generic demo if not matching
+            if (role === 'doctor' && email !== 'scix@oncotracker.com') {
+                alert("Invalid credentials. Try: scix@oncotracker.com / Zx987@");
+                return;
+            }
+            if (role === 'supervisor' && email !== 'admin@oncotracker.com') {
+                alert("Invalid credentials. Try: admin@oncotracker.com / OncoSciX@");
+                return;
+            }
+
+            // Default redirect if passing basic checks
             if (role === 'doctor') router.push('/dashboard/doctor');
             else if (role === 'supervisor') router.push('/dashboard/supervisor');
             else router.push('/dashboard/patient');
         }, 1000);
     };
+
 
     const roleTitle = role === 'doctor' ? 'Provider' : role === 'supervisor' ? 'Supervisor' : 'Patient';
 
