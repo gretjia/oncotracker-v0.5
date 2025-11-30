@@ -15,6 +15,11 @@
 - **Update Script**: Created `update_data.sh` and `update_data.py` to automate the process of loading new datasets into the HTML application.
 - **Dataset Update**: Loaded `dataset251130_2.xlsx` into `oncotracker v0.6.2.html`.
 
+### Chart Cleanup
+
+- **Phase Filtering**: Refined chart rendering to only display background shading for active cycles (e.g., "C1") and major surgeries.
+- **Artifact Removal**: Removed unneeded grey shading and lines for miscellaneous phases (e.g., pre-treatment events) to improve chart neatness.
+
 ## v0.6.1 (2025-11-27)
 
 ### Major Feature: Settings Persistence

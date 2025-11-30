@@ -120,13 +120,13 @@
         @media print {
             @page {
                 size: A4 landscape;
-                margin: 0mm;
-                /* Zero margin for full bleed */
+                margin: 10mm;
+                /* Industry standard margin for printer compatibility */
             }
 
             body {
-                margin: 0mm !important;
-                /* Remove safety margin */
+                margin: 0 !important;
+                padding: 0 !important;
             }
 
             body,
@@ -617,6 +617,7 @@
             "Unnamed: 1": "胃癌根治术",
             "Unnamed: 2": "AS0",
             "Unnamed: 3": "C8D34",
+            "Unnamed: 4": "post-surgical recovery",
             "Unnamed: 5": "LRG + D2",
             "Unnamed: 7": "46"
         },
@@ -1138,7 +1139,7 @@
                         currentPhase.duration = Math.ceil((currentPhase.end - currentPhase.start) / (1000 * 60 * 60 * 24));
                         AppState.data.phases.push(currentPhase);
                     }
-                    currentPhase = { start: date, end: null, name: phaseName || (currentPhase ? currentPhase.name : "Treatment"), cycle: cycleName || "", scheme: schemeText || (currentPhase ? currentPhase.scheme : ""), type: (phaseName && phaseName.includes("术")) ? "surgery" : "medication" };
+                    currentPhase = { start: date, end: null, name: phaseName || (currentPhase ? currentPhase.name : "Treatment"), cycle: cycleName || "", scheme: schemeText || (currentPhase ? currentPhase.scheme : ""), type: (phaseName && (phaseName.includes("术") || phaseName.includes("腹腔镜"))) ? "surgery" : "medication" };
                 } else if (schemeText && currentPhase) { currentPhase.scheme = schemeText; }
             });
             // Calculate maxDate from all data points to ensure last phase covers everything
@@ -1500,7 +1501,9 @@
             labelLayer.selectAll("*").remove();
 
             if (AppState.view.showPhases) {
-                const phases = phaseLayer.selectAll(".phase-group").data(AppState.data.phases).join("g").attr("class", "phase-group");
+                // Filter: Only show phases that have a Cycle number OR are Surgeries
+                const visiblePhases = AppState.data.phases.filter(d => d.cycle || d.type === 'surgery');
+                const phases = phaseLayer.selectAll(".phase-group").data(visiblePhases).join("g").attr("class", "phase-group");
 
                 // 1. Header Backgrounds (Higher Opacity)
                 phases.append("rect")
