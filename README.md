@@ -4,23 +4,31 @@ Here is a comprehensive `README.md` file documenting the current state of the pr
 
 # Patient Journey Visualizer
 
-![Version](https://img.shields.io/badge/version-v0.6.2-blue)
-![Status](https://img.shields.io/badge/status-prototype-orange)
+![Version](https://img.shields.io/badge/version-v0.7.0-blue)
+![Status](https://img.shields.io/badge/status-migration_in_progress-yellow)
 
-# OncoTracker v0.6.2
+# OncoTracker v0.7.0
 
-A single-file HTML visualization tool for longitudinal cancer treatment data.
-Current Version: **v0.6.2**
+A hybrid application transitioning from a single-file HTML prototype to a full-stack Next.js platform.
+Current Version: **v0.7.0**
 A web-based visualization tool for tracking cancer treatment journeys, including chemotherapy cycles, clinical events, and tumor marker trends.
 
 > [!IMPORTANT]
 > **Full Stack Migration Roadmap:** We are transitioning from this HTML prototype to a robust full-stack application. See [PLAN.md](PLAN.md) for the detailed implementation plan covering React, Python, Open Source AI, and RBAC.
 
+> [!CAUTION]
+> **THE GOLDEN RULE**: `oncotracker v0.6.2.html` is the **ABSOLUTE SOURCE OF TRUTH** for all UI/UX and data visualization algorithms. Any future frontend development (React/Next.js) **MUST** be a pixel-perfect port of this file. Do not redesign or alter the logic without explicit approval.
+
 ## Project Structure
 
 ```
 oncotracker v0.5/
-├── 📄 oncotracker v0.6.2.html      # Main application (v0.6.2) - Current production version
+├── 📂 oncotracker-next/            # [NEW] Full-stack Next.js Application (v0.7.0+)
+│   ├── app/                        # App Router (Pages & API)
+│   ├── components/                 # React Components (inc. PatientJourneyVisualizer)
+│   ├── lib/                        # Utilities & Types
+│   └── public/                     # Static Assets
+├── 📄 oncotracker v0.6.2.html      # Legacy Prototype (Reference Implementation)
 ├── 📊 dataset251130_3.xlsx         # Latest patient data (2025-11-30)
 ├── 🔧 update_data.py               # Python script to inject Excel data into HTML
 ├── 🔧 update_data.sh               # Bash automation script (auto-detects latest files)
@@ -47,6 +55,7 @@ oncotracker v0.5/
 
 ### Version History
 
+- **v0.7.0** (2025-11-30): **Next.js Migration** - Initialized full-stack app, ported Visualizer to React, added AI Agents.
 - **v0.6.2** (2025-11-30): Current version with print optimization, data automation, and chart cleanup
 - **v0.6.1** (2025-11-27): Settings persistence and data updates
 - **v0.5.7** (2025-11-27): Enhanced year axis and in-chart event labels

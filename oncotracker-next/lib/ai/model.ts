@@ -1,9 +1,14 @@
 import { createOpenAI } from '@ai-sdk/openai';
 
 // Create an OpenAI-compatible client for Alibaba Qwen
+const apiKey = process.env.QWEN_API_KEY;
+console.log('[Model Config] Initializing Qwen Client');
+console.log('[Model Config] API Key exists:', !!apiKey);
+console.log('[Model Config] API Key length:', apiKey?.length);
+
 const qwenClient = createOpenAI({
     baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
-    apiKey: process.env.QWEN_API_KEY,
+    apiKey: apiKey,
 });
 
 // Export the specific model instance

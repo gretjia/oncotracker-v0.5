@@ -84,7 +84,7 @@ export default function ManageDataPage() {
                     <div className="relative">
                         <input
                             type="file"
-                            accept=".xlsx, .xls"
+                            accept=".xlsx, .xls, .csv, .json"
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                             onChange={handleFileUpload}
                         />

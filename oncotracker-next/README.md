@@ -5,7 +5,7 @@ Advanced patient journey visualization and management platform for modern oncolo
 ## Features
 
 - **Patient Journey Visualizer**: Interactive timeline of treatments, events, and metrics.
-- **Generative UI Assistant**: Chat with your data using AI to uncover insights.
+- **Generative UI Assistant**: Data-aware chatbot that analyzes patient metrics and controls the visualization.
 - **Data Management**:
   - Excel-like spreadsheet interface for editing data.
   - Intelligent file ingestion with AI column mapping.
@@ -71,9 +71,13 @@ For development and testing, the following accounts are available via mock authe
   - `manage-data/`: Data management tools.
   - `dashboard/`: Role-specific dashboards (Patient, Doctor, Supervisor).
   - `auth/`: Login and Register pages.
+  - `api/`: Backend API routes (Agents, Ingestion).
 - `components/`: Reusable UI components (Visualizer, Chat, Spreadsheet).
 - `lib/`: Utilities, types, and AI agents.
+- `scripts/`: Utility scripts (Database seeding, testing).
 - `supabase/`: Database migrations and types.
+- `MASTERPLAN.md`: Comprehensive project vision and roadmap.
+- `CHANGELOG.md`: Detailed version history.
 
 ## Tech Stack
 
@@ -87,3 +91,27 @@ For development and testing, the following accounts are available via mock authe
 ## License
 
 Private and Confidential.
+
+---
+
+## Legacy Prototype (HTML Version)
+
+The project originated as a single-file HTML prototype (`oncotracker v0.6.2.html`). This version is still available in the root directory for reference.
+
+### Legacy Features (Ported to Next.js)
+
+- **Timeline Visualization**: Interactive D3.js chart showing treatment cycles over time.
+- **Metric Tracking**: Visualizes key tumor markers (CEA, CA19-9, etc.) with dual-axis support.
+- **Event Logging**: Markers for surgeries, imaging, and other clinical events.
+- **Scheme Details**: Detailed breakdown of chemotherapy regimens.
+- **Responsive Design**: Tailwind CSS for a clean, modern UI.
+
+### Legacy Usage
+
+```bash
+# Update the HTML with a new dataset
+./update_data.sh
+
+# Open the application
+open "oncotracker v0.6.2.html"
+```

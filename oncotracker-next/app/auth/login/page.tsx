@@ -5,6 +5,8 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { createClient } from '@/lib/supabase/client';
+import { loginAction } from '@/app/actions/auth-actions';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Activity, ArrowLeft } from 'lucide-react';
@@ -16,53 +18,34 @@ function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null); // New state for error messages
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
+        setError(null); // Clear previous errors
 
-        // Mock Authentication Logic
-        console.log("Logging in as", role, email, password);
+        const formData = new FormData(e.target as HTMLFormElement);
+        // Add email and password to formData for the server action
+        formData.append('email', email);
+        formData.append('password', password);
+        formData.append('role', role); // Pass the role to the server action if needed for redirection logic
 
-        // Simulate delay
-        setTimeout(() => {
+        try {
+            const result = await loginAction(formData);
+
+            if (result?.error) {
+                setError(result.error);
+                setIsLoading(false);
+            }
+            // If success, the server action redirects, so we don't need to do anything here.
+            // The browser will navigate away.
+
+        } catch (err) {
+            console.error('Login error:', err);
+            setError('An unexpected error occurred');
             setIsLoading(false);
-
-            // Hardcoded Credentials Check
-            if (role === 'doctor') {
-                if (email === 'scix@oncotracker.com' && password === 'Zx987@') {
-                    router.push('/dashboard/doctor');
-                    return;
-                }
-            } else if (role === 'supervisor') {
-                if (email === 'admin@oncotracker.com' && password === 'OncoSciX@') {
-                    router.push('/dashboard/supervisor');
-                    return;
-                }
-            } else if (role === 'patient') {
-                // Allow generic login for patient demo, or specific
-                if (email === 'zhangli@oncotracker.com') {
-                    router.push('/dashboard/patient');
-                    return;
-                }
-            }
-
-            // Fallback for demo (if credentials don't match specific ones, still allow for testing if needed, or show error)
-            // For now, let's strictly enforce the requested ones or default to generic demo if not matching
-            if (role === 'doctor' && email !== 'scix@oncotracker.com') {
-                alert("Invalid credentials. Try: scix@oncotracker.com / Zx987@");
-                return;
-            }
-            if (role === 'supervisor' && email !== 'admin@oncotracker.com') {
-                alert("Invalid credentials. Try: admin@oncotracker.com / OncoSciX@");
-                return;
-            }
-
-            // Default redirect if passing basic checks
-            if (role === 'doctor') router.push('/dashboard/doctor');
-            else if (role === 'supervisor') router.push('/dashboard/supervisor');
-            else router.push('/dashboard/patient');
-        }, 1000);
+        }
     };
 
 
@@ -86,6 +69,11 @@ function LoginForm() {
                 </CardDescription>
             </CardHeader>
             <CardContent>
+                {error && (
+                    <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm mb-4">
+                        {error}
+                    </div>
+                )}
                 <form onSubmit={handleLogin} className="space-y-4">
                     <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>

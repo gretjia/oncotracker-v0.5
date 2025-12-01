@@ -21,7 +21,7 @@ export function JourneyPageClient({ dataset }: JourneyPageClientProps) {
             <div className="flex-1 h-full relative">
                 <PatientJourneyVisualizer
                     dataset={dataset}
-                // Pass highlighted metric if visualizer supports it (TODO: Add support in Visualizer)
+                    highlightMetric={highlightedMetric}
                 />
 
                 {/* Floating Toggle Button */}
@@ -46,7 +46,7 @@ export function JourneyPageClient({ dataset }: JourneyPageClientProps) {
                     >
                         <X className="w-4 h-4" />
                     </Button>
-                    <ChatInterface onHighlightMetric={setHighlightedMetric} />
+                    <ChatInterface dataset={dataset} onHighlightMetric={setHighlightedMetric} />
                 </div>
             )}
         </div>

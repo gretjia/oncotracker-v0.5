@@ -10,20 +10,72 @@ export async function uploadData(formData: FormData) {
     }
 
     const buffer = await file.arrayBuffer();
-    const workbook = XLSX.read(buffer, { type: 'buffer' });
-    const sheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[sheetName];
+    let rawData: any[][] = [];
 
-    // Convert to JSON (array of arrays)
-    const rawData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
+    if (file.name.endsWith('.json')) {
+        const text = new TextDecoder().decode(buffer);
+        const json = JSON.parse(text);
+        if (Array.isArray(json)) {
+            rawData = json;
+        } else {
+            // Handle case where JSON might be wrapped or single object
+            rawData = [json];
+        }
+        // If it's an array of objects, we need to convert to array of arrays for consistency if that's what the rest of the logic expects,
+        // OR we adapt the logic below. The current logic expects array of arrays (sheet_to_json with header:1).
+        // Let's normalize JSON to array of objects and skip the array-of-arrays step if possible, 
+        // BUT the downstream logic uses `potentialHeaders = rawData[2]`.
+        // Actually, `sheet_to_json` with `header: 1` returns array of arrays.
+        // If we have JSON objects, we should probably convert them to that format or adjust downstream.
 
-    if (rawData.length < 5) {
+        // Simpler approach: If JSON, assume it's already an array of objects matching the final structure, 
+        // and we just need to extract headers.
+
+        // Let's convert array-of-objects to array-of-arrays to reuse the header extraction logic
+        if (rawData.length > 0 && typeof rawData[0] === 'object') {
+            const headers = Object.keys(rawData[0]);
+            const rows = rawData.map(obj => headers.map(h => obj[h]));
+            rawData = [headers, ...rows]; // Prepend headers
+
+            // Adjust for the "row 2" assumption in the existing code?
+            // The existing code assumes row 2 (index 2) is headers. 
+            // If we just parsed JSON, row 0 is headers.
+            // We might need to pad it or adjust the logic.
+            // Let's just pad it with empty rows to match the "Excel" structure expected by the Agent logic if we want to reuse it exactly.
+            rawData = [[], [], headers, ...rows];
+        }
+    } else {
+        const workbook = XLSX.read(buffer, { type: 'buffer' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        rawData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
+    }
+
+    if (rawData.length < 1) { // Relaxed check
         throw new Error('File too short to be a valid dataset');
     }
 
-    // Extract headers (assuming row 2 based on our knowledge, but let's be dynamic)
-    // Let's grab the first non-empty row as potential headers for mapping
-    const potentialHeaders = rawData[2] as string[]; // Index 2 is Metric Names in our standard
+    // Extract headers
+    // If it was JSON/CSV with simple structure, headers might be at 0.
+    // If it was our Excel template, headers might be at 2.
+    // We can try to detect "Date" or "Phase" or similar keywords.
+
+    let headerRowIndex = 0;
+    const knownHeaders = ['Date', 'Phase', 'Cycle', 'Scheme', 'Event', 'Metric'];
+
+    for (let i = 0; i < Math.min(rawData.length, 10); i++) {
+        const row = rawData[i];
+        if (Array.isArray(row) && row.some(cell => typeof cell === 'string' && knownHeaders.some(h => cell.includes(h)))) {
+            headerRowIndex = i;
+            break;
+        }
+        // Fallback for JSON padding we added: if row is empty, skip. 
+        // If we find a row with string keys that look like headers.
+    }
+
+    // If we padded JSON, we know where it is (index 2), but the loop above should find it too.
+
+    const potentialHeaders = rawData[headerRowIndex] as string[];
 
     console.log('Potential Headers:', potentialHeaders);
 
@@ -32,12 +84,9 @@ export async function uploadData(formData: FormData) {
 
     console.log('Mapping Result:', mappingResult);
 
-    // In a real app, we would apply this mapping to transform the data.
-    // For now, we'll just return the raw data and the mapping for the UI to display.
-
-    // We need to return a structure that fits FormalDataset for the UI preview
-    // Construct a FormalDataset-like object
-    const formalDataset = rawData.map((row, idx) => {
+    // Construct FormalDataset
+    // We start from headerRowIndex + 1
+    const formalDataset = rawData.slice(headerRowIndex + 1).map((row, idx) => {
         const obj: any = {};
         row.forEach((cell: any, i: number) => {
             const key = potentialHeaders[i] || `Unnamed: ${i}`;

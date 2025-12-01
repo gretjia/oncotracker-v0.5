@@ -11,11 +11,12 @@ import { Card } from '@/components/ui/card';
 
 interface PatientJourneyVisualizerProps {
     dataset: FormalDataset;
+    highlightMetric?: string | null;
 }
 
 const COLORS = ['#0284c7', '#d97706', '#be185d', '#7c3aed', '#059669', '#dc2626', '#475569', '#4f46e5', '#ea580c', '#0d9488', '#c026d3', '#6366f1', '#84cc16', '#f43f5e'];
 
-export function PatientJourneyVisualizer({ dataset }: PatientJourneyVisualizerProps) {
+export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJourneyVisualizerProps) {
     const chartContainerRef = useRef<HTMLDivElement>(null);
     const svgRef = useRef<SVGSVGElement | null>(null);
     const zoomRef = useRef<d3.ZoomBehavior<Element, unknown> | null>(null);
@@ -35,6 +36,27 @@ export function PatientJourneyVisualizer({ dataset }: PatientJourneyVisualizerPr
         chartFlexRatio: 2,
         isPrinting: false
     });
+
+    // Handle Highlight Metric Effect
+    useEffect(() => {
+        if (highlightMetric && data.metrics[highlightMetric]) {
+            setData(prev => {
+                const metric = prev.metrics[highlightMetric];
+                if (!metric) return prev;
+
+                // Only update if not already in the desired state to avoid loops
+                if (metric.active && metric.expanded) return prev;
+
+                return {
+                    ...prev,
+                    metrics: {
+                        ...prev.metrics,
+                        [highlightMetric]: { ...metric, active: true, expanded: true }
+                    }
+                };
+            });
+        }
+    }, [highlightMetric, data.metrics]);
 
     // Process Data (Memoized)
     useEffect(() => {
@@ -232,8 +254,11 @@ export function PatientJourneyVisualizer({ dataset }: PatientJourneyVisualizerPr
         defs.append("marker").attr("id", "arrow-end").attr("viewBox", "0 0 10 10").attr("refX", 0).attr("refY", 5).attr("markerWidth", 6).attr("markerHeight", 6).attr("orient", "auto").append("path").attr("d", "M 0 0 L 10 5 L 0 10 z").attr("fill", "#94a3b8");
 
         // Clips
-        defs.append("clipPath").attr("id", "mainClip").append("rect").attr("x", view.margin.left).attr("y", 0).attr("width", Math.max(0, width - view.margin.left - view.margin.right)).attr("height", Math.max(0, height - view.margin.bottom));
-        defs.append("clipPath").attr("id", "chartClip").append("rect").attr("x", view.margin.left).attr("y", view.margin.top).attr("width", Math.max(0, width - view.margin.left - view.margin.right)).attr("height", Math.max(0, height - view.margin.top - view.margin.bottom));
+        const clipHeight = Math.max(0, height - view.margin.bottom);
+        const chartClipHeight = Math.max(0, height - view.margin.top - view.margin.bottom);
+
+        defs.append("clipPath").attr("id", "mainClip").append("rect").attr("x", view.margin.left).attr("y", 0).attr("width", Math.max(0, width - view.margin.left - view.margin.right)).attr("height", clipHeight);
+        defs.append("clipPath").attr("id", "chartClip").append("rect").attr("x", view.margin.left).attr("y", view.margin.top).attr("width", Math.max(0, width - view.margin.left - view.margin.right)).attr("height", chartClipHeight);
 
         const allDates = [...data.phases.map(p => p.start), ...data.phases.map(p => p.end), ...data.events.map(e => e.date)].filter(d => d);
         const domain = d3.extent(allDates) as [Date, Date];
@@ -543,7 +568,7 @@ export function PatientJourneyVisualizer({ dataset }: PatientJourneyVisualizerPr
                                 <div key={m.name} className={cn("expand-transition group rounded cursor-pointer select-none overflow-hidden relative border shadow-sm flex flex-col", m.expanded ? "bg-slate-50 border-slate-400 shadow-md py-3 px-3 border-l-[4px]" : "bg-white border-slate-200 hover:border-blue-300 py-2 px-3")} style={{ borderLeftColor: m.expanded ? m.color : 'transparent' }} onClick={() => updateMetricProp(m.name, 'expanded', !m.expanded)}>
                                     <div className="flex items-center justify-between gap-2">
                                         <div className="flex items-center gap-2 overflow-hidden flex-1">
-                                            <input type="checkbox" checked={m.active} onClick={(e) => { e.stopPropagation(); toggleMetric(m.name); }} className="w-4 h-4 rounded-sm text-blue-600 bg-slate-100 border-slate-300 focus:ring-0 cursor-pointer shrink-0" />
+                                            <input type="checkbox" checked={m.active} onChange={(e) => { e.stopPropagation(); toggleMetric(m.name); }} className="w-4 h-4 rounded-sm text-blue-600 bg-slate-100 border-slate-300 focus:ring-0 cursor-pointer shrink-0" />
                                             <div className="w-1 h-4 rounded-full shrink-0" style={{ backgroundColor: m.color, opacity: m.opacity }}></div>
                                             <div className="flex flex-col overflow-hidden">
                                                 <div className="flex items-baseline gap-1">

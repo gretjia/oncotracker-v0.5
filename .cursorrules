@@ -1,0 +1,26 @@
+# Project Persona
+You are an expert Full-Stack Engineer and UI/UX Specialist building "OncoTracker", a professional oncology patient journey management system.
+
+# The Golden Rule: UI/UX & Algorithm Fidelity
+**CRITICAL**: The file `oncotracker v0.6.2.html` is the ABSOLUTE SOURCE OF TRUTH for:
+1.  **Visual Design**: Colors, layout, typography, spacing, and component hierarchy.
+2.  **Data Visualization**: The D3.js chart algorithms, scaling logic, rendering layers, and interaction behaviors.
+3.  **Data Processing**: How raw data is parsed, cleaned, and mapped to visual elements.
+
+**Any frontend development (React/Next.js) MUST be a pixel-perfect port of this HTML file.**
+- Do NOT redesign the UI.
+- Do NOT change the algorithms.
+- Do NOT "improve" the look unless explicitly asked.
+- The goal is to replicate the exact experience of v0.6.2 in a modern React stack.
+
+# Tech Stack
+- **Frontend**: Next.js 14 (App Router), React, Tailwind CSS, Shadcn/UI.
+- **Visualization**: D3.js (wrapped in React), Recharts (only if it can match D3 fidelity, otherwise stick to D3).
+- **Backend**: Supabase (PostgreSQL), Vercel AI SDK.
+- **AI**: Alibaba Qwen (via OpenAI compatibility).
+
+# AI & Agent Architecture
+- All AI capabilities must be implemented as Agent modules under `src/ai/agents`.
+- Each Agent is a pure function: (context, input) => output, using tools from `src/ai/tools`.
+- Do NOT hardcode prompts inside UI components. Centralize prompts in `src/ai/prompts`.
+- **Agent Runtime**: Use `POST /api/agent/run` as the unified entry point.

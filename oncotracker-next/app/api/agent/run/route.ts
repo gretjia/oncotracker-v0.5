@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
                 result = await runIngestionAgent(task, payload);
                 break;
             case 'journey_explainer':
-                result = await runJourneyExplainerAgent(task);
+                result = await runJourneyExplainerAgent(task, payload?.context);
                 break;
             case 'safety':
                 return NextResponse.json({ error: 'Safety Agent not implemented yet' }, { status: 501 });
@@ -39,8 +39,10 @@ export async function POST(req: NextRequest) {
     } catch (error) {
         console.error('[Agent Runtime] Error:', error);
         if (error instanceof z.ZodError) {
+            console.error('[Agent Runtime] Zod Error:', JSON.stringify((error as any).errors, null, 2));
             return NextResponse.json({ error: 'Invalid request body', details: (error as any).errors }, { status: 400 });
         }
+        console.error('[Agent Runtime] Internal Error:', String(error));
         return NextResponse.json({ error: 'Internal Server Error', details: String(error) }, { status: 500 });
     }
 }

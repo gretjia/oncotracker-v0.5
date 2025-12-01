@@ -14,11 +14,14 @@ interface Message {
     timestamp: number;
 }
 
+import { FormalDataset } from '@/lib/types';
+
 interface ChatInterfaceProps {
+    dataset?: FormalDataset;
     onHighlightMetric?: (metric: string | null) => void;
 }
 
-export function ChatInterface({ onHighlightMetric }: ChatInterfaceProps) {
+export function ChatInterface({ dataset, onHighlightMetric }: ChatInterfaceProps) {
     const [messages, setMessages] = useState<Message[]>([
         {
             id: 'welcome',
@@ -37,6 +40,56 @@ export function ChatInterface({ onHighlightMetric }: ChatInterfaceProps) {
         }
     }, [messages]);
 
+    const getContextFromDataset = () => {
+        if (!dataset || !dataset.FormalDataset) return null;
+
+        const rows = dataset.FormalDataset;
+        const headerRow = rows[2];
+        const dataRows = rows.slice(4);
+
+        // Extract key metrics: Weight, CEA, CA125, MRD
+        const metricsOfInterest = ['Weight', '体重', 'CEA', 'CA125', 'MRD'];
+        const contextData: Record<string, any[]> = {};
+
+        // Map column indices
+        const colMap: Record<string, string> = {};
+        Object.entries(headerRow).forEach(([key, val]) => {
+            if (val && metricsOfInterest.some(m => val.includes(m))) {
+                colMap[key] = val;
+                contextData[val] = [];
+            }
+        });
+
+        dataRows.forEach(row => {
+            const rawDate = row["Unnamed: 0"];
+            if (!rawDate) return;
+
+            let dateStr = rawDate;
+            // Handle Excel Serial Date
+            if (!isNaN(Number(rawDate))) {
+                const serial = Number(rawDate);
+                const date = new Date(Math.round((serial - 25569) * 86400 * 1000));
+                if (!isNaN(date.getTime())) {
+                    dateStr = date.toISOString().split('T')[0];
+                }
+            }
+
+            Object.entries(colMap).forEach(([colKey, metricName]) => {
+                const val = row[colKey];
+                if (val) {
+                    contextData[metricName].push({ date: dateStr, value: val });
+                }
+            });
+        });
+
+        // Limit to last 20 points to save tokens
+        Object.keys(contextData).forEach(key => {
+            contextData[key] = contextData[key].slice(-20);
+        });
+
+        return contextData;
+    };
+
     const handleSend = async () => {
         if (!input.trim() || isLoading) return;
 
@@ -52,16 +105,22 @@ export function ChatInterface({ onHighlightMetric }: ChatInterfaceProps) {
         setIsLoading(true);
 
         try {
+            const context = getContextFromDataset();
+
             const response = await fetch('/api/agent/run', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     agent: 'journey_explainer',
                     task: userMessage.content,
+                    payload: { context }
                 }),
             });
 
-            if (!response.ok) throw new Error('Failed to fetch response');
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.details || errorData.error || `HTTP ${response.status}`);
+            }
 
             const data = await response.json();
 
@@ -82,14 +141,14 @@ export function ChatInterface({ onHighlightMetric }: ChatInterfaceProps) {
                 onHighlightMetric(null); // Clear highlight if not specified
             }
 
-        } catch (error) {
+        } catch (error: any) {
             console.error('Chat Error:', error);
             setMessages((prev) => [
                 ...prev,
                 {
                     id: Date.now().toString(),
                     role: 'assistant',
-                    content: 'Sorry, I encountered an error processing your request.',
+                    content: `Error: ${error.message || 'Unknown error'}`,
                     timestamp: Date.now(),
                 },
             ]);
