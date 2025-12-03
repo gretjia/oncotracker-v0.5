@@ -39,9 +39,11 @@ oncotracker v0.5/
 │   │   │   ├── doctor/               # Doctor view + Add Patient
 │   │   │   ├── patient/              # Patient self-view
 │   │   │   └── supervisor/           # Admin overview
-│   │   └── journey/                  # Patient Journey Visualization
+│   │   ├── journey/                  # Patient Journey Visualization
+│   │   └── manage-data/              # Data Editor (Spreadsheet)
 │   ├── components/                   # React Components
 │   │   ├── PatientJourneyVisualizer.tsx  # D3.js Chart (Core)
+│   │   ├── DataSpreadsheet.tsx      # Spreadsheet Editor
 │   │   ├── ChatInterface.tsx         # AI Assistant
 │   │   └── ui/                       # Shadcn/UI components
 │   ├── lib/                          # Core Libraries
@@ -160,6 +162,21 @@ Bilingual support with 25+ predefined metrics:
 | **影像负荷** | 肺, 肝脏, 淋巴, 盆腔 |
 | **副作用** | 白细胞, 血小板, 中性粒细胞, AST, ALT |
 | **其他指标** | Custom/unknown metrics preserved |
+
+### 5. Data Management & Editing
+
+Interactive spreadsheet editor for direct data manipulation:
+
+**Features:**
+- ✏️ **Inline Editing**: Edit any cell directly in the spreadsheet
+- ➕ **Add Rows**: Insert new data rows with one click
+- 📊 **Add Metrics**: Create new metric columns (automatically updates header row)
+- 📤 **Import/Export**: Upload Excel files or export edited data
+- 🎨 **Modern UI**: Clean, spreadsheet-like interface matching Patient Journey design
+
+**Access:**
+- Navigate to `/manage-data?patientId=<id>` from the doctor dashboard
+- Or click "Edit Data" button on any patient card
 
 ---
 

@@ -1,5 +1,35 @@
 # Changelog
 
+## [v0.7.2] - 2025-12-03
+
+### Added
+
+- **Data Management Page Enhancements**:
+  - **Add Row Functionality**: Users can now add new data rows directly in the spreadsheet editor.
+  - **Add Metric Functionality**: Users can add new metric columns (e.g., "细胞角蛋白19片段") with automatic header row updates.
+  - **Modern UI Redesign**: Complete redesign of `/manage-data` page to match Patient Journey page aesthetic.
+  - **Controlled Component Architecture**: Refactored `DataSpreadsheet` to be a controlled component with proper state management.
+  - **Smart Header Display**: Column headers now show friendly names from canonical schema or metric names from Row 2.
+
+### Changed
+
+- **Data Spreadsheet Component**:
+  - Replaced `contentEditable` cells with proper `input` fields for better React state management.
+  - Added sticky headers and row numbers for better navigation.
+  - Improved visual styling with proper borders, hover states, and header row highlighting.
+  - Column headers now display metric names from Row 2 instead of just "Unnamed: X" keys.
+
+- **Manage Data Page**:
+  - Enhanced header with patient name display and improved button styling.
+  - Added toolbar with "Add Row" and "Add Metric" buttons.
+  - Better loading states and empty state handling.
+  - Improved layout consistency with Patient Journey page.
+
+### Fixed
+
+- **Patient ID Parameter**: Fixed `/manage-data` page to correctly pass `patientId` query parameter to API calls.
+- **Back Navigation**: Back button now preserves `patientId` when navigating to journey page.
+
 ## [v0.7.1] - 2025-12-03
 
 ### Added
