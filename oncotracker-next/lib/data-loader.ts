@@ -4,12 +4,25 @@ import fs from 'fs';
 import { FormalDataset } from './types';
 
 export async function loadDataset(): Promise<FormalDataset> {
-    const filePath = path.resolve(process.cwd(), 'data/dataset.xlsx');
+    const dataDir = path.resolve(process.cwd(), 'data');
 
-    // Check if file exists
-    if (!fs.existsSync(filePath)) {
-        throw new Error(`Dataset file not found at ${filePath}`);
+    // Find all .xlsx files
+    const files = fs.readdirSync(dataDir)
+        .filter(f => f.endsWith('.xlsx') && !f.startsWith('~$'))
+        .map(f => ({
+            name: f,
+            time: fs.statSync(path.join(dataDir, f)).mtime.getTime()
+        }))
+        .sort((a, b) => b.time - a.time); // Sort by newest first
+
+    const xlsxFile = files.length > 0 ? files[0].name : null;
+
+    if (!xlsxFile) {
+        throw new Error(`No .xlsx dataset file found in ${dataDir}`);
     }
+
+    const filePath = path.join(dataDir, xlsxFile);
+    const patientName = path.parse(xlsxFile).name;
 
     const fileBuffer = fs.readFileSync(filePath);
     const workbook = XLSX.read(fileBuffer, { type: 'buffer' });
@@ -35,5 +48,5 @@ export async function loadDataset(): Promise<FormalDataset> {
         return newRow;
     });
 
-    return { FormalDataset: mappedData };
+    return { FormalDataset: mappedData, patientName };
 }

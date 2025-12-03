@@ -3,6 +3,8 @@
 import { createClient } from '@supabase/supabase-js';
 import { createClient as createServerClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
+import fs from 'fs';
+import path from 'path';
 
 // Admin client for creating users
 const supabaseAdmin = createClient(
@@ -157,6 +159,15 @@ export async function createPatientAction(formData: FormData) {
         if (datasetFile && datasetFile.size > 0) {
             try {
                 await processAndSaveDataset(datasetFile, newUser.user.id, supabaseAdmin);
+
+                // Save file to data directory for chart visualization (Demo/MVP bridge)
+                const buffer = await datasetFile.arrayBuffer();
+                const dataDir = path.resolve(process.cwd(), 'data');
+                // Sanitize filename
+                const safeName = fullName.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_');
+                const filePath = path.join(dataDir, `${safeName}.xlsx`);
+                fs.writeFileSync(filePath, Buffer.from(buffer));
+
             } catch (err) {
                 console.error('Failed to process dataset:', err);
                 // We don't fail the whole request, just log it. 
@@ -304,5 +315,34 @@ async function processAndSaveDataset(file: File, patientId: string, supabaseAdmi
             console.error('Error inserting observations:', error);
             throw error;
         }
+    }
+}
+
+import { analyzeStructure } from '@/lib/llm/qwen';
+
+export async function parseAndMapUpload(formData: FormData) {
+    try {
+        const file = formData.get('file') as File;
+        if (!file) throw new Error('No file uploaded');
+
+        const buffer = await file.arrayBuffer();
+        const workbook = XLSX.read(buffer, { type: 'buffer' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const rawData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
+
+        if (rawData.length === 0) throw new Error('Empty file');
+
+        // Extract headers and sample rows
+        const headers = rawData[0];
+        const samples = rawData.slice(1, 4); // First 3 data rows
+
+        // Call LLM
+        const mapping = await analyzeStructure(headers, samples);
+
+        return { success: true, mapping, headers, samples };
+    } catch (error: any) {
+        console.error('Parse Error:', error);
+        return { success: false, error: error.message };
     }
 }

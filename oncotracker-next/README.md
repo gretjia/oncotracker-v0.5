@@ -4,11 +4,12 @@ Advanced patient journey visualization and management platform for modern oncolo
 
 ## Features
 
-- **Patient Journey Visualizer**: Interactive timeline of treatments, events, and metrics.
+- **Mobile Optimized**: Fully responsive design with touch support and landscape optimization.
+- **Patient Journey Visualizer**: Interactive timeline of treatments, events, and metrics (D3.js).
 - **Generative UI Assistant**: Data-aware chatbot that analyzes patient metrics and controls the visualization.
 - **Data Management**:
   - Excel-like spreadsheet interface for editing data.
-  - Intelligent file ingestion with AI column mapping.
+  - **Smart Ingestion**: AI-powered upload for unstructured Excel/CSV/JSON files.
 - **Role-Based Access Control (RBAC)**:
   - **Patient Portal**: View personal journey and records.
   - **Provider Portal**: Manage assigned patients and treatment plans.

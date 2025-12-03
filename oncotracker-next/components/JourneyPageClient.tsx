@@ -12,7 +12,7 @@ interface JourneyPageClientProps {
 }
 
 export function JourneyPageClient({ dataset }: JourneyPageClientProps) {
-    const [isChatOpen, setIsChatOpen] = useState(true);
+    const [isChatOpen, setIsChatOpen] = useState(false);
     const [highlightedMetric, setHighlightedMetric] = useState<string | null>(null);
 
     return (
@@ -28,23 +28,25 @@ export function JourneyPageClient({ dataset }: JourneyPageClientProps) {
                 {!isChatOpen && (
                     <Button
                         onClick={() => setIsChatOpen(true)}
-                        className="absolute bottom-6 right-6 rounded-full shadow-lg w-12 h-12 p-0"
+                        className="absolute bottom-6 right-6 rounded-full shadow-xl h-12 px-4 bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 z-40 animate-in fade-in zoom-in duration-300"
                     >
-                        <MessageSquare className="w-6 h-6" />
+                        <MessageSquare className="w-5 h-5" />
+                        <span className="font-semibold hidden md:inline">Assistant</span>
+                        <span className="font-semibold md:hidden">AI Chat</span>
                     </Button>
                 )}
             </div>
 
             {/* Chat Sidebar */}
             {isChatOpen && (
-                <div className="h-full relative border-l shadow-xl z-20 transition-all duration-300 ease-in-out">
+                <div className="fixed inset-0 z-50 w-full md:relative md:w-[350px] md:inset-auto h-full bg-white border-l shadow-xl transition-all duration-300 ease-in-out">
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute top-2 right-2 z-30 h-6 w-6"
+                        className="absolute top-2 right-2 z-30 h-8 w-8 md:h-6 md:w-6"
                         onClick={() => setIsChatOpen(false)}
                     >
-                        <X className="w-4 h-4" />
+                        <X className="w-5 h-5 md:w-4 md:h-4" />
                     </Button>
                     <ChatInterface dataset={dataset} onHighlightMetric={setHighlightedMetric} />
                 </div>

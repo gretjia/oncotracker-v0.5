@@ -158,7 +158,7 @@ export function ChatInterface({ dataset, onHighlightMetric }: ChatInterfaceProps
     };
 
     return (
-        <div className="flex flex-col h-full bg-white border-l shadow-xl w-[350px]">
+        <div className="flex flex-col h-full bg-white w-full">
             <div className="p-4 border-b bg-slate-50 flex items-center gap-2">
                 <Bot className="w-5 h-5 text-blue-600" />
                 <h2 className="font-semibold text-slate-800">Journey Assistant</h2>

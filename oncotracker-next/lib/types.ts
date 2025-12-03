@@ -11,6 +11,7 @@ export interface FormalDatasetRow {
 
 export interface FormalDataset {
     FormalDataset: FormalDatasetRow[];
+    patientName?: string;
 }
 
 export interface Phase {
@@ -52,6 +53,7 @@ export interface Metric {
     rangeMin: number;
     rangeMax: number;
     threshold: number | null;
+    baseScale: number;
 }
 
 export interface AppStateData {

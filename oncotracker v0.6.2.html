@@ -1125,11 +1125,25 @@
             let currentPhase = null;
             timeline.sort((a, b) => a.date - b.date);
             timeline.forEach(({ date, row }) => {
-                const phaseName = row[COL_PHASE], cycleName = row[COL_CYCLE] ? (row[COL_CYCLE].match(/C\d+/) || [row[COL_CYCLE]])[0] : null, schemeText = row[COL_SCHEME];
+                const phaseName = row[COL_PHASE], cycleName = row[COL_CYCLE] ? (row[COL_CYCLE].match(/C\d+|AS\d+/) || [row[COL_CYCLE]])[0] : null, schemeText = row[COL_SCHEME];
                 const eventName = row[COL_EVENT];
+                
+                // AS Phase Merging Logic
+                const isAS = cycleName && cycleName.startsWith("AS");
+                
                 // Fix: Only start new phase if cycle changes or if it's a non-cycle phase start
                 // Refinement: Do not interrupt an active cycle (e.g. C0) with a non-cycle phase unless it is Surgery ("术")
-                const isNewCycle = cycleName && (!currentPhase || currentPhase.cycle !== cycleName);
+                // AS Logic: If it's an AS cycle, we treat it as the SAME phase if the current phase is already AS.
+                
+                let isNewCycle = false;
+                if (isAS) {
+                    // If current phase is NOT AS, then it's a new cycle.
+                    // If current phase IS AS, then it's NOT a new cycle (we merge).
+                    isNewCycle = !currentPhase || currentPhase.name !== "AS";
+                } else {
+                    isNewCycle = cycleName && (!currentPhase || currentPhase.cycle !== cycleName);
+                }
+
                 const isNewNonCyclePhase = !cycleName && phaseName && phaseName !== eventName &&
                     (!currentPhase || !currentPhase.cycle || phaseName.includes("术"));
 
@@ -1139,8 +1153,34 @@
                         currentPhase.duration = Math.ceil((currentPhase.end - currentPhase.start) / (1000 * 60 * 60 * 24));
                         AppState.data.phases.push(currentPhase);
                     }
-                    currentPhase = { start: date, end: null, name: phaseName || (currentPhase ? currentPhase.name : "Treatment"), cycle: cycleName || "", scheme: schemeText || (currentPhase ? currentPhase.scheme : ""), type: (phaseName && (phaseName.includes("术") || phaseName.includes("腹腔镜"))) ? "surgery" : "medication" };
-                } else if (schemeText && currentPhase) { currentPhase.scheme = schemeText; }
+                    
+                    let newName = phaseName || (currentPhase ? currentPhase.name : "Treatment");
+                    let newCycle = cycleName || "";
+                    let newScheme = schemeText || (currentPhase ? currentPhase.scheme : "");
+                    
+                    if (isAS) {
+                        newName = "AS";
+                        newCycle = "AS"; // Display "AS" as the cycle name
+                        newScheme = ""; // Clear scheme for AS summary or keep if needed? User said "AS in the middle, the next line to to show the total days"
+                    }
+
+                    currentPhase = { 
+                        start: date, 
+                        end: null, 
+                        name: newName, 
+                        cycle: newCycle, 
+                        scheme: newScheme, 
+                        type: (phaseName && (phaseName.includes("术") || phaseName.includes("腹腔镜"))) ? "surgery" : "medication" 
+                    };
+                } else if (schemeText && currentPhase) { 
+                     // If we are in AS phase, we might want to ignore individual scheme updates if we want a clean block, 
+                     // or accumulate them. For now, let's keep standard behavior but since we merged AS, 
+                     // we might not want to overwrite the "AS" scheme if it's meant to be empty or specific.
+                     // However, the user didn't specify scheme behavior, just "AS in the middle".
+                     if (currentPhase.name !== "AS") {
+                        currentPhase.scheme = schemeText; 
+                     }
+                }
             });
             // Calculate maxDate from all data points to ensure last phase covers everything
             let maxDate = new Date(timeline[0].date);

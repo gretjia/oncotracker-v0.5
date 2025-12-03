@@ -2,6 +2,8 @@
 
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as d3 from 'd3';
+import { ArrowLeftRight, ArrowUpDown, Plus, Minus, SlidersHorizontal, ChevronUp, ChevronDown, Settings2 } from 'lucide-react';
+
 import { FormalDataset, AppStateData, AppStateView, Metric, Phase, EventMarker } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -37,6 +39,8 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
         isPrinting: false
     });
 
+    const [showControls, setShowControls] = useState(true);
+
     // Handle Highlight Metric Effect
     useEffect(() => {
         if (highlightMetric && data.metrics[highlightMetric]) {
@@ -57,6 +61,49 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
             });
         }
     }, [highlightMetric, data.metrics]);
+
+    // Handle Resize
+    useEffect(() => {
+        if (!chartContainerRef.current) return;
+
+        const resizeObserver = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                const { width, height } = entry.contentRect;
+                const isMobile = width < 768;
+                setView(prev => {
+                    if (prev.width === width && prev.height === height) return prev;
+                    return {
+                        ...prev,
+                        width,
+                        height,
+                        margin: isMobile
+                            ? { top: 60, right: 10, bottom: 20, left: 10 }
+                            : { top: 85, right: 30, bottom: 30, left: 30 }
+                    };
+                });
+            }
+        });
+
+        resizeObserver.observe(chartContainerRef.current);
+
+        // Handle Print
+        const handleBeforePrint = () => {
+            setView(prev => ({ ...prev, isPrinting: true }));
+            // Force a resize check immediately if possible, or rely on CSS + ResizeObserver
+        };
+        const handleAfterPrint = () => {
+            setView(prev => ({ ...prev, isPrinting: false }));
+        };
+
+        window.addEventListener('beforeprint', handleBeforePrint);
+        window.addEventListener('afterprint', handleAfterPrint);
+
+        return () => {
+            resizeObserver.disconnect();
+            window.removeEventListener('beforeprint', handleBeforePrint);
+            window.removeEventListener('afterprint', handleAfterPrint);
+        };
+    }, []);
 
     // Process Data (Memoized)
     useEffect(() => {
@@ -95,7 +142,7 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
                         id: key, name: val, data: [], color: COLORS[colorIdx],
                         scale: 1.0, offset: 0, opacity: 1.0, showLine: true, showValues: false, mid: 0,
                         active: false, expanded: false,
-                        unit: unitRow[key] || '', rangeMin: 0, rangeMax: 0, threshold: threshold
+                        unit: unitRow[key] || '', rangeMin: 0, rangeMax: 0, threshold: threshold, baseScale: 1.0
                     };
                 }
             }
@@ -164,11 +211,22 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
 
         timeline.forEach(({ date, row }) => {
             const phaseName = row[COL_PHASE];
-            const cycleName = row[COL_CYCLE] ? (row[COL_CYCLE].match(/C\d+/) || [row[COL_CYCLE]])[0] : null;
+            const cycleName = row[COL_CYCLE] ? (row[COL_CYCLE].match(/C\d+|AS\d+/) || [row[COL_CYCLE]])[0] : null;
             const schemeText = row[COL_SCHEME];
             const eventName = row[COL_EVENT];
 
-            const isNewCycle = cycleName && (!currentPhase || currentPhase.cycle !== cycleName);
+            // AS Phase Merging Logic
+            const isAS = cycleName && cycleName.startsWith("AS");
+
+            let isNewCycle = false;
+            if (isAS) {
+                // If current phase is NOT AS, then it's a new cycle.
+                // If current phase IS AS, then it's NOT a new cycle (we merge).
+                isNewCycle = !currentPhase || currentPhase.name !== "AS";
+            } else {
+                isNewCycle = cycleName && (!currentPhase || currentPhase.cycle !== cycleName);
+            }
+
             const isNewNonCyclePhase = !cycleName && phaseName && phaseName !== eventName &&
                 (!currentPhase || !currentPhase.cycle || phaseName.includes("术"));
 
@@ -178,17 +236,30 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
                     currentPhase.duration = Math.ceil((currentPhase.end.getTime() - currentPhase.start.getTime()) / (1000 * 60 * 60 * 24));
                     newData.phases.push(currentPhase);
                 }
+
+                let newName = phaseName || (currentPhase ? (currentPhase as Phase).name : "Treatment");
+                let newCycle = cycleName || "";
+                let newScheme = schemeText || (currentPhase ? (currentPhase as Phase).scheme : "");
+
+                if (isAS) {
+                    newName = "AS";
+                    newCycle = "AS";
+                    newScheme = "";
+                }
+
                 currentPhase = {
                     start: date,
                     end: new Date(), // Placeholder
-                    name: phaseName || (currentPhase ? (currentPhase as Phase).name : "Treatment"),
-                    cycle: cycleName || "",
-                    scheme: schemeText || (currentPhase ? (currentPhase as Phase).scheme : ""),
+                    name: newName,
+                    cycle: newCycle,
+                    scheme: newScheme,
                     duration: 0,
                     type: (phaseName && (phaseName.includes("术") || phaseName.includes("腹腔镜"))) ? "surgery" : "medication"
                 };
             } else if (schemeText && currentPhase) {
-                currentPhase.scheme = schemeText;
+                if (currentPhase.name !== "AS") {
+                    currentPhase.scheme = schemeText;
+                }
             }
         });
 
@@ -220,6 +291,27 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
                 lastDate = e.date;
             }
             e.overlapIndex = overlapCount;
+        });
+
+        // 6. Calculate Metric Ranges & Midpoints & Auto-Scale
+        Object.values(newData.metrics).forEach(m => {
+            if (m.data.length > 0) {
+                const values = m.data.map(d => d.value);
+                m.rangeMin = Math.min(...values);
+                m.rangeMax = Math.max(...values);
+                m.mid = (m.rangeMin + m.rangeMax) / 2;
+
+                if (m.rangeMax === m.rangeMin) {
+                    m.scale = 1;
+                    m.offset = 50 - m.mid;
+                } else {
+                    m.scale = 60 / (m.rangeMax - m.rangeMin);
+                    m.offset = 50 - m.mid;
+                }
+                m.scale = parseFloat(m.scale.toFixed(3));
+                m.offset = Math.round(m.offset);
+                m.baseScale = m.scale; // Store initial scale as base for slider range
+            }
         });
 
         // Default Active Metrics
@@ -470,7 +562,7 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
             const y = d3.scaleLinear().domain([0, 100]).range([view.height - view.margin.bottom, view.margin.top]);
             updateChart(newX, y);
         }
-    }, [view.showPhases, view.showEvents, view.showSchemes, view.phaseOpacity, data.metrics]);
+    }, [view.showPhases, view.showEvents, view.showSchemes, view.phaseOpacity, data.metrics, view.width, view.height]);
 
     // Handlers
     const toggleMetric = (name: string) => {
@@ -487,6 +579,30 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
         }));
     };
 
+    // Zoom Controls
+    const zoomChart = (factor: number) => {
+        if (svgRef.current && zoomRef.current) {
+            d3.select(svgRef.current as Element).transition().duration(300).call(zoomRef.current.scaleBy, factor);
+        }
+    };
+
+    const resetChartZoom = () => {
+        if (svgRef.current && zoomRef.current) {
+            d3.select(svgRef.current as Element).transition().duration(750).call(zoomRef.current.transform, d3.zoomIdentity);
+        }
+    };
+
+    const zoomYAxis = (factor: number) => {
+        setView(prev => ({
+            ...prev,
+            chartFlexRatio: Math.max(0.5, Math.min(10, prev.chartFlexRatio * factor))
+        }));
+    };
+
+    const autoFitYAxis = () => {
+        setView(prev => ({ ...prev, chartFlexRatio: 2 }));
+    };
+
     return (
         <div className="flex flex-col h-screen bg-slate-50 overflow-hidden">
             {/* Header */}
@@ -496,7 +612,9 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
                         <i className="fa-solid fa-chart-line text-xs"></i>
                     </div>
                     <div>
-                        <h1 className="text-xs font-bold text-slate-900 uppercase tracking-wide">Patient Journey</h1>
+                        <h1 className="text-xs font-bold text-slate-900 uppercase tracking-wide">
+                            {dataset.patientName ? `Patient Journey: ${dataset.patientName}` : 'Patient Journey'}
+                        </h1>
                         <div className="text-[9px] text-slate-500 font-mono">ADVANCED UI</div>
                     </div>
                 </div>
@@ -509,9 +627,11 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
             <div className="flex-1 flex flex-col min-h-0 overflow-hidden bg-slate-50">
 
                 {/* Chart Pane */}
-                <main className="flex flex-col bg-white relative w-full border-b border-slate-200 z-0 min-h-0" style={{ flex: view.chartFlexRatio }}>
+                <main className="flex flex-col bg-white relative w-full border-b border-slate-200 z-0 min-h-0 print:h-screen print:w-screen print:border-none" style={{ flex: view.chartFlexRatio }}>
                     <div className="text-center py-2 border-b border-slate-100 bg-white shrink-0">
-                        <h2 className="text-sm font-bold text-slate-800">Timeline of Cancer Treatment and Monitoring</h2>
+                        <h2 className="text-sm font-bold text-slate-800">
+                            {dataset.patientName ? `Timeline of Cancer Treatment and Monitoring: ${dataset.patientName}` : 'Timeline of Cancer Treatment and Monitoring'}
+                        </h2>
                     </div>
                     <div className="flex-1 relative w-full group min-h-0" ref={chartContainerRef}></div>
 
@@ -531,15 +651,59 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
                                 ))}
                             </div>
                         </div>
-                        <div className="flex items-center gap-2 mr-4 border-l border-slate-200 pl-3">
-                            <span className="text-[9px] font-bold text-slate-400 uppercase">背景透明度</span>
-                            <Slider min={0} max={1} step={0.05} value={[view.phaseOpacity]} onValueChange={([v]) => setView(prev => ({ ...prev, phaseOpacity: v }))} className="w-16" />
+                        <div className="flex items-center gap-2 mr-4 border-l border-slate-200 pl-3 print:hidden">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0 md:hidden"
+                                onClick={() => setShowControls(!showControls)}
+                            >
+                                {showControls ? <ChevronDown className="w-4 h-4 text-blue-600" /> : <Settings2 className="w-4 h-4 text-slate-500" />}
+                            </Button>
+                            <span className="text-[9px] font-bold text-slate-400 uppercase hidden sm:inline">背景透明度</span>
+                            <Slider min={0} max={1} step={0.05} value={[view.phaseOpacity]} onValueChange={([v]) => setView(prev => ({ ...prev, phaseOpacity: v }))} className="w-16 hidden sm:flex" />
+                        </div>
+
+                        {/* X-Axis Zoom Tools */}
+                        <div className="flex items-center gap-1 flex-shrink-0 pl-3 border-l border-slate-200 bg-slate-50/50 print:hidden">
+                            <ArrowLeftRight className="w-3 h-3 text-slate-500 mr-0.5" />
+                            <span className="text-[10px] font-bold text-slate-500 mr-1">横纵比：</span>
+                            <button onClick={() => zoomChart(1.2)} className="w-6 h-6 flex items-center justify-center rounded hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 text-slate-500 transition-all" title="Zoom In">
+                                <Plus className="w-3 h-3" />
+                            </button>
+                            <button onClick={() => zoomChart(0.8)} className="w-6 h-6 flex items-center justify-center rounded hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 text-slate-500 transition-all" title="Zoom Out">
+                                <Minus className="w-3 h-3" />
+                            </button>
+                            <button onClick={resetChartZoom} className="h-6 px-2 flex items-center justify-center gap-1 rounded hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 text-slate-600 text-[10px] font-bold transition-all ml-1" title="Reset View">
+                                全病程
+                            </button>
+                        </div>
+
+                        {/* Y-Axis Zoom Tools */}
+                        <div className="flex items-center gap-1 flex-shrink-0 pl-3 border-l border-slate-200 bg-blue-50/30 print:hidden">
+                            <ArrowUpDown className="w-3 h-3 text-blue-600 mr-0.5" />
+                            <span className="text-[10px] font-bold text-slate-500 mr-1">纵横比：</span>
+                            <button onClick={() => zoomYAxis(1.2)} className="w-6 h-6 flex items-center justify-center rounded hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 text-slate-500 transition-all" title="Zoom In (Y-axis)">
+                                <Plus className="w-3 h-3" />
+                            </button>
+                            <button onClick={() => zoomYAxis(0.8)} className="w-6 h-6 flex items-center justify-center rounded hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 text-slate-500 transition-all" title="Zoom Out (Y-axis)">
+                                <Minus className="w-3 h-3" />
+                            </button>
+                            <button onClick={autoFitYAxis} className="h-6 px-2 flex items-center justify-center gap-1 rounded hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 text-slate-600 text-[10px] font-bold transition-all ml-1" title="Auto-fit Y-axis">
+                                自适应
+                            </button>
                         </div>
                     </div>
                 </main>
 
                 {/* Controls Pane */}
-                <aside className="bg-slate-50 flex flex-col z-10 min-h-0 overflow-hidden" style={{ flex: 1 }}>
+                <aside
+                    className={cn(
+                        "bg-slate-50 flex flex-col z-10 min-h-0 overflow-hidden print:hidden transition-all duration-300 ease-in-out",
+                        showControls ? "flex-1 opacity-100" : "h-0 flex-none opacity-0 border-none"
+                    )}
+                    style={{ flex: showControls ? (view.width < 768 ? 1.5 : 1) : 0 }}
+                >
                     <div className="px-4 py-2 border-b border-slate-200 bg-white flex gap-4 items-center justify-between shrink-0 shadow-[0_2px_5px_rgba(0,0,0,0.02)]">
                         <div className="flex gap-4 items-center flex-1">
                             <div>
@@ -563,9 +727,9 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
                         </div>
                     </div>
                     <div className="flex-1 overflow-y-auto p-2 bg-slate-50">
-                        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 pb-10">
+                        <div className="flex flex-wrap gap-2 pb-10">
                             {Object.values(data.metrics).sort((a, b) => b.data.length - a.data.length).map(m => (
-                                <div key={m.name} className={cn("expand-transition group rounded cursor-pointer select-none overflow-hidden relative border shadow-sm flex flex-col", m.expanded ? "bg-slate-50 border-slate-400 shadow-md py-3 px-3 border-l-[4px]" : "bg-white border-slate-200 hover:border-blue-300 py-2 px-3")} style={{ borderLeftColor: m.expanded ? m.color : 'transparent' }} onClick={() => updateMetricProp(m.name, 'expanded', !m.expanded)}>
+                                <div key={m.name} className={cn("expand-transition group rounded cursor-pointer select-none overflow-hidden relative border shadow-sm flex flex-col", m.expanded ? "bg-slate-50 border-slate-400 shadow-md py-3 px-3 border-l-[4px] w-full md:w-96" : "bg-white border-slate-200 hover:border-blue-300 py-2 px-3 w-auto")} style={{ borderLeftColor: m.expanded ? m.color : 'transparent' }} onClick={() => updateMetricProp(m.name, 'expanded', !m.expanded)}>
                                     <div className="flex items-center justify-between gap-2">
                                         <div className="flex items-center gap-2 overflow-hidden flex-1">
                                             <input type="checkbox" checked={m.active} onChange={(e) => { e.stopPropagation(); toggleMetric(m.name); }} className="w-4 h-4 rounded-sm text-blue-600 bg-slate-100 border-slate-300 focus:ring-0 cursor-pointer shrink-0" />
@@ -582,16 +746,16 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
                                     {m.expanded && (
                                         <div className="mt-2 pt-2 border-t border-slate-200 grid grid-cols-2 gap-x-3 gap-y-2 cursor-default" onClick={(e) => e.stopPropagation()}>
                                             <div className="touch-none">
-                                                <div className="flex justify-between text-[9px] text-slate-500 mb-1"><span>Scale</span><span>{m.scale}</span></div>
-                                                <Slider min={0.001} max={m.scale * 5} step={m.scale < 0.1 ? 0.001 : 0.1} value={[m.scale]} onValueChange={([v]) => updateMetricProp(m.name, 'scale', v)} />
+                                                <div className="flex justify-between text-[9px] text-slate-500 mb-1"><span>Scale</span><span>{isNaN(m.scale) ? 1 : m.scale}</span></div>
+                                                <Slider min={0.001} max={(m.baseScale || 1) * 5} step={(m.baseScale || 1) / 50} value={[isNaN(m.scale) ? 1 : m.scale]} onValueChange={([v]) => updateMetricProp(m.name, 'scale', v)} />
                                             </div>
                                             <div className="touch-none">
-                                                <div className="flex justify-between text-[9px] text-slate-500 mb-1"><span>Shift</span><span>{m.offset}</span></div>
-                                                <Slider min={-200} max={200} step={1} value={[m.offset]} onValueChange={([v]) => updateMetricProp(m.name, 'offset', v)} />
+                                                <div className="flex justify-between text-[9px] text-slate-500 mb-1"><span>Shift</span><span>{isNaN(m.offset) ? 0 : m.offset}</span></div>
+                                                <Slider min={-200} max={200} step={1} value={[isNaN(m.offset) ? 0 : m.offset]} onValueChange={([v]) => updateMetricProp(m.name, 'offset', v)} />
                                             </div>
                                             <div className="touch-none">
-                                                <div className="flex justify-between text-[9px] text-slate-500 mb-1"><span>Opacity</span><span>{m.opacity}</span></div>
-                                                <Slider min={0.1} max={1} step={0.1} value={[m.opacity]} onValueChange={([v]) => updateMetricProp(m.name, 'opacity', v)} />
+                                                <div className="flex justify-between text-[9px] text-slate-500 mb-1"><span>Opacity</span><span>{isNaN(m.opacity) ? 1 : m.opacity}</span></div>
+                                                <Slider min={0.1} max={1} step={0.1} value={[isNaN(m.opacity) ? 1 : m.opacity]} onValueChange={([v]) => updateMetricProp(m.name, 'opacity', v)} />
                                             </div>
                                             <div className="flex items-end justify-end gap-1">
                                                 <button onClick={() => updateMetricProp(m.name, 'showLine', !m.showLine)} className={cn("flex items-center gap-1 text-[10px] bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded border border-slate-300 transition-colors", !m.showLine ? "text-slate-400" : "text-blue-600 font-bold")}>
