@@ -1,26 +1,30 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Upload, Save, FileSpreadsheet, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { DataSpreadsheet } from '@/components/DataSpreadsheet';
-import { loadDataset } from '@/lib/data-loader'; // We'll need a client-side friendly way or server action
 import { FormalDataset } from '@/lib/types';
 
 import { uploadData } from '@/app/actions/upload-data';
 
 export default function ManageDataPage() {
+    const searchParams = useSearchParams();
+    const patientId = searchParams.get('patientId');
+    
     const [dataset, setDataset] = useState<FormalDataset | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Fetch initial data
-        // Since loadDataset is server-side, we should probably fetch via an API or Server Action.
-        // For now, let's assume we fetch from an API route we'll create, or pass initial data from a Server Component wrapper.
-        // To keep it simple for this step, I'll fetch from a new API endpoint.
-        fetch('/api/data/current')
+        // Build API URL with patientId if available
+        const apiUrl = patientId 
+            ? `/api/data/current?patientId=${encodeURIComponent(patientId)}`
+            : '/api/data/current';
+        
+        fetch(apiUrl)
             .then(res => res.json())
             .then(data => {
                 setDataset(data);
@@ -30,7 +34,7 @@ export default function ManageDataPage() {
                 console.error("Failed to load data", err);
                 setIsLoading(false);
             });
-    }, []);
+    }, [patientId]);
 
 
 
@@ -70,7 +74,10 @@ export default function ManageDataPage() {
             {/* Top Bar */}
             <header className="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-4 shrink-0">
                 <div className="flex items-center gap-4">
-                    <Link href="/journey" className="text-slate-500 hover:text-slate-900 transition-colors">
+                    <Link 
+                        href={patientId ? `/journey?patientId=${patientId}` : '/journey'} 
+                        className="text-slate-500 hover:text-slate-900 transition-colors"
+                    >
                         <ArrowLeft className="w-5 h-5" />
                     </Link>
                     <div className="flex items-center gap-2">
