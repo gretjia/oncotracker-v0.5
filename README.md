@@ -1,284 +1,282 @@
-Here is a comprehensive `README.md` file documenting the current state of the project. It follows industry-standard documentation practices (Google/Microsoft style guides) to ensure clarity for developers, product managers, and clinical stakeholders.
+# OncoTracker
 
-***
+![Version](https://img.shields.io/badge/version-v0.7.1-blue)
+![Next.js](https://img.shields.io/badge/Next.js-14-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
+![License](https://img.shields.io/badge/license-Private-red)
 
-# Patient Journey Visualizer
+**A professional oncology patient journey management system** for visualizing cancer treatment timelines, clinical metrics, and tumor marker trends.
 
-![Version](https://img.shields.io/badge/version-v0.7.0-blue)
-![Status](https://img.shields.io/badge/status-migration_in_progress-yellow)
+<p align="center">
+  <img src="https://img.shields.io/badge/D3.js-Visualization-orange" />
+  <img src="https://img.shields.io/badge/Supabase-Backend-green" />
+  <img src="https://img.shields.io/badge/AI-Qwen_72B-purple" />
+</p>
 
-# OncoTracker v0.7.0
+---
 
-A hybrid application transitioning from a single-file HTML prototype to a full-stack Next.js platform.
-Current Version: **v0.7.0**
-A web-based visualization tool for tracking cancer treatment journeys, including chemotherapy cycles, clinical events, and tumor marker trends.
+## 🎯 Overview
 
-> [!IMPORTANT]
-> **Full Stack Migration Roadmap:** We are transitioning from this HTML prototype to a robust full-stack application. See [PLAN.md](PLAN.md) for the detailed implementation plan covering React, Python, Open Source AI, and RBAC.
+OncoTracker transforms complex oncology data into intuitive visual timelines, enabling clinicians to:
 
-> [!CAUTION]
-> **THE GOLDEN RULE**: `oncotracker v0.6.2.html` is the **ABSOLUTE SOURCE OF TRUTH** for all UI/UX and data visualization algorithms. Any future frontend development (React/Next.js) **MUST** be a pixel-perfect port of this file. Do not redesign or alter the logic without explicit approval.
+- **Track Treatment Journeys** — Visualize chemotherapy cycles, surgeries, and clinical events
+- **Monitor Tumor Markers** — CEA, CA19-9, CA125, MRD, and custom metrics with threshold alerts
+- **AI-Powered Data Ingestion** — Upload any Excel format; AI automatically maps to standardized schema
+- **Multi-Patient Management** — Role-based access for doctors, patients, and supervisors
 
-## Project Structure
+---
+
+## 🏗️ Architecture
 
 ```
 oncotracker v0.5/
-├── 📂 oncotracker-next/            # [NEW] Full-stack Next.js Application (v0.7.0+)
-│   ├── app/                        # App Router (Pages & API)
-│   ├── components/                 # React Components (inc. PatientJourneyVisualizer)
-│   ├── lib/                        # Utilities & Types
-│   └── public/                     # Static Assets
-├── 📄 oncotracker v0.6.2.html      # Legacy Prototype (Reference Implementation)
-├── 📊 dataset251130_3.xlsx         # Latest patient data (2025-11-30)
-├── 🔧 update_data.py               # Python script to inject Excel data into HTML
-├── 🔧 update_data.sh               # Bash automation script (auto-detects latest files)
-├── 📖 README.md                    # This file - Project documentation
-├── 📝 changelog.md                 # Version history and release notes
-├── 📋 PLAN.md                      # Full-stack migration roadmap
-├── 📚 library.md                   # Treatment term abbreviation mappings
-└── .git/                           # Git version control
-
+├── 📂 oncotracker-next/              # Full-stack Next.js 14 Application
+│   ├── app/                          # App Router (Pages, API Routes, Server Actions)
+│   │   ├── actions/                  # Server Actions (auth, patient, upload)
+│   │   ├── api/                      # API Routes (agent, data)
+│   │   ├── auth/                     # Login/Register pages
+│   │   ├── dashboard/                # Role-based dashboards
+│   │   │   ├── doctor/               # Doctor view + Add Patient
+│   │   │   ├── patient/              # Patient self-view
+│   │   │   └── supervisor/           # Admin overview
+│   │   └── journey/                  # Patient Journey Visualization
+│   ├── components/                   # React Components
+│   │   ├── PatientJourneyVisualizer.tsx  # D3.js Chart (Core)
+│   │   ├── ChatInterface.tsx         # AI Assistant
+│   │   └── ui/                       # Shadcn/UI components
+│   ├── lib/                          # Core Libraries
+│   │   ├── ai/                       # AI Agents & Tools
+│   │   │   ├── agents/               # Ingestion, Journey Explainer
+│   │   │   ├── prompts/              # Centralized AI prompts
+│   │   │   └── tools/                # AI tool definitions
+│   │   ├── llm/                      # LLM Integration (Qwen)
+│   │   ├── schema/                   # Data Standardization
+│   │   │   ├── oncology-dataset.schema.ts  # Zod validation
+│   │   │   ├── metric-dictionary.ts  # Bilingual metric definitions
+│   │   │   └── data-transformer.ts   # Format conversion
+│   │   └── supabase/                 # Database clients
+│   ├── data/                         # Patient datasets (.xlsx)
+│   └── scripts/                      # Migration & utility scripts
+├── 📄 oncotracker v0.6.2.html        # Reference Implementation (Source of Truth)
+├── 📊 dataset*.xlsx                  # Sample patient data
+└── 🔧 update_data.py/sh              # Legacy data injection scripts
 ```
-
-### File Descriptions
-
-| File | Version | Purpose | Status |
-|------|---------|---------|--------|
-| **oncotracker v0.6.2.html** | v0.6.2 | Single-file web application with embedded D3.js visualization | ✅ **Active** |
-| **dataset251130_3.xlsx** | Latest | Patient treatment data in standardized Excel format | ✅ **Active** |
-| **update_data.py** | - | Python script to update HTML with new dataset | ✅ **Active** |
-| **update_data.sh** | - | Bash wrapper that auto-detects latest dataset and HTML | ✅ **Active** |
-| **README.md** | - | Comprehensive project documentation | ✅ **Active** |
-| **changelog.md** | - | Version history with detailed release notes | ✅ **Active** |
-| **PLAN.md** | - | Full-stack application migration plan | ✅ **Active** |
-| **library.md** | - | Medical term abbreviation reference | ✅ **Active** |
-
-### Version History
-
-- **v0.7.0** (2025-11-30): **Next.js Migration** - Initialized full-stack app, ported Visualizer to React, added AI Agents.
-- **v0.6.2** (2025-11-30): Current version with print optimization, data automation, and chart cleanup
-- **v0.6.1** (2025-11-27): Settings persistence and data updates
-- **v0.5.7** (2025-11-27): Enhanced year axis and in-chart event labels
-- **v0.5.6** (2025-11-24): Event exclusion fixes and UI improvements
-
-### Quick Start
-
-```bash
-# Update the HTML with a new dataset
-./update_data.sh
-
-# Or manually specify files
-python3 update_data.py dataset251130_3.xlsx "oncotracker v0.6.2.html"
-
-# Open the application
-open "oncotracker v0.6.2.html"
-```
-
-## Features
-
-- **Timeline Visualization:** Interactive D3.js chart showing treatment cycles over time.
-- **Metric Tracking:** Visualizes key tumor markers (CEA, CA19-9, etc.) with dual-axis support.
-- **Event Logging:** Markers for surgeries, imaging, and other clinical events.
-- **Scheme Details:** Detailed breakdown of chemotherapy regimens.
-- **Responsive Design:** Tailwind CSS for a clean, modern UI.
-- **Formal Dataset Support:** Now supports the standardized `formal_dataset.xlsx` structure.
-
-- **Interactive Timeline**: Zoomable x-axis (time) with custom year brackets and month markers.
-
-- **Smart Layout**:
-  - **Split Header**: Phases and Schemes are organized in the top header.
-  - **In-Chart Events**: Events are displayed as vertical labels inside the chart to maximize space.
-  - **Data Clipping**: Strict clipping ensures data stays within the chart area.
-  - **Settings Persistence**: Automatically saves user preferences (metrics, colors, view options) to local storage.
-  - **Reset Option**: "Reset" button to clear saved settings and restore defaults.
-
-## 2. Technical Architecture
-
-### 2.1. Technology Stack
-
-The application is built as a **Single-Page Application (SPA)** contained within a single HTML file for ease of portability and deployment.
-
-- **Core Language:** HTML5, CSS3, JavaScript (ES6+).
-- **Visualization Engine:** [D3.js (v7)](https://d3js.org/) - Handles SVG generation, scales, axis, and rendering logic.
-- **Styling Framework:** [Tailwind CSS (v3.4)](https://tailwindcss.com/) - Utility-first CSS for responsive layout and typography.
-- **Iconography:** [FontAwesome (v6)](https://fontawesome.com/) - UI icons.
-
-### 2.2. Data Processing (Python Context)
-
-*Note: While the current frontend is pure JavaScript, the data structure implies upstream processing.*
-
-- **Upstream Processing:** Python (`pandas`, `json`) is used to convert raw clinical Excel/CSV files into the hierarchical JSON structure required by this frontend.
-- **Abbreviation Mapping:** Automated mapping of treatment terms to standardized abbreviations via `library.md` during data processing.
-- **Data Ingestion:** The frontend parses a JSON object containing `Unnamed` keys (artifacts from Pandas dataframe exports) and cleans them into semantic objects.
-
-## 3. Features & Functionality
-
-### 3.1. Visualization Layers
-
-1. **Phases (Background):**
-    - Renders treatment cycles (e.g., "C1", "AS0") with automatic "D1" suffix removal.
-    - **Rainbow Coding:** Uses a cyclic color palette (Red/Orange/Yellow/Green/Cyan/Blue/Purple) with adjustable opacity to distinguish adjacent phases.
-    - **Two-Line Labels:** Phase labels display cycle name on first line (e.g., "C1") and duration on second line in English (e.g., "21 days") with smaller font.
-    - **Scheme Display:** Treatment schemes are split into multiple lines and centered below the cycle label.
-    - **Semantic Highlighting:** Surgery phases use a distinct red tint.
-2. **Events (Vertical Markers):**
-    - Dashed vertical lines representing specific medical events (e.g., "Laparoscopy").
-    - **Smart Labeling:** Labels are placed at the **top** of the chart, rotated **45 degrees** to prevent overlap and maximize chart area.
-3. **Clinical Indicators (Curves):**
-    - Renders quantitative data (CEA, CA125, Weight, etc.) as smooth Catmull-Rom curves.
-    - **Solid Data Points:** All data points are rendered as solid circles for better visibility.
-    - **Value Labels:** Optional numeric labels can be displayed above each data point via toggle button in metric controls.
-    - **Alert System:** Automatically parses thresholds (e.g., `<35`) from metadata. Values exceeding thresholds are rendered as **Solid Red Pulsing Dots**.
-
-### 3.2. Interactive Controls
-
-The application features a fixed split-pane layout with the chart occupying the top ~66% and controls at the bottom.
-
-    * Mouse wheel zoom is disabled to prevent accidental triggering.
-
-- **Axes:** Left Y-axis (0-100 scale), bottom X-axis showing months with intermediate ticks and year labels below.
-- **Tooltips:** Hovering over data points reveals Date, Phase context, Value, and Threshold status.
-- **Control Panel (Bottom):**
-  - **Grid Layout:** Responsive grid (1-4 columns) adapting to mobile/desktop.
-  - **Collapsible Cards:** Each metric has a control card.
-    - **Collapsed:** Shows Name, Unit, Color indicator (—●— style), and Range.
-    - **Expanded:** Reveals slider controls.
-  - **Fine-Tuning:**
-    - **Scale:** Vertical multiplication factor (adaptive range).
-    - **Shift:** Vertical offset (-200 to +200).
-    - **Opacity:** Adjust transparency (0.1 to 1.0).
-    - **Line Toggle:** Switch between Line Chart and Scatter Plot.
-    - **Value Labels Toggle:** Show/hide numeric values on data points ("显示数值" / "隐藏数值").
-  - **Color Picker:** Native HTML5 color input for live customization.
-
-### 3.3. Mobile & Print Optimization
-
-- **Responsive Layout:**
-  - **Desktop:** Fixed split view with chart on top and controls at bottom.
-  - **Mobile:** Dynamic viewport height (`100dvh`), touch-action management to separate chart panning from page scrolling.
-- **Print Mode (A4 Landscape):**
-  - CSS `@media print` rules hide UI controls (buttons, scrollbars).
-  - Forces background color printing.
-  - Optimizes text size and contrast for physical paper output.
-
-## 4. Data Structure Definition
-
-The application expects a JSON object named `sourceData`. The parser `processData()` handles the following schema:
-
-```json
-{
-  "ProjectName": [
-    { ... }, // Row 0-5: Metadata (Skipped)
-    { "Unnamed: 7": "Weight", "Unnamed: 10": "MRD" ... }, // Row 6: Headers
-    { "Unnamed: 7": "KG", "Unnamed: 17": "<35" ... },    // Row 7: Units & Thresholds
-    { "Unnamed: 0": "2024-06-06", "Unnamed: 1": "PhaseName", "Unnamed: 7": "45.6" ... } // Row 8+: Data
-  ]
-}
-```
-
-## 5. Function Call Hierarchy
-
-The logic is encapsulated in a global `AppState` object and functional components.
-
-### Initialization
-
-1. `processData()`:
-    - Reads raw JSON.
-    - Extracts Headers and Units.
-    - Parses **Thresholds** via RegEx (`/[<>]\s*([\d\.]+)/`).
-    - Iterates rows to build `AppState.data.timeline`, `metrics`, and `events`.
-    - Calculates Phase durations.
-2. `renderControls()`:
-    - Generates HTML for the bottom control panel.
-    - Binds click events for Expansion, Toggling, and Sliders.
-3. `initChart()`:
-    - Calculates SVG dimensions.
-    - Sets up D3 Scales (`scaleTime`, `scaleLinear`).
-    - Initializes D3 Zoom behavior.
-
-### Rendering Cycle
-
-- `drawChart(fullInit)`: Main entry point for rendering.
-- `updateChart(rescaledX)`:
-  - **Layer 1:** Draws Phase Rectangles + Text Labels (Center aligned).
-  - **Layer 2:** Draws Event Dashed Lines + 45° Top Labels.
-  - **Layer 3:** Draws Metrics.
-    - Applies `customY` calculation based on user Scale/Shift.
-    - Draws `path` (Spline).
-    - Draws `circle` (Logic: Red/Pulse if `isAlert`, else White).
-
-### Interaction Handlers
-
-- `zoomChart(factor)` / `resetChartZoom()`: Programmatic zooming.
-- `toggleMetric()`, `updateScale()`, `updateOffset()`: Reactively updates `AppState` and calls `drawChart(false)`.
-- `initResizer()`: Handles the DOM drag events to adjust the height ratio between Chart and Controls.
-
-## 6. UI Design Principles (Implemented)
-
-1. **Clarity:** High-contrast "Light Mode" ensures readability on screens and paper.
-2. **Information Hierarchy:**
-    - Primary: Trends (Curves) and Anomalies (Red Dots).
-    - Secondary: Context (Phases, Events).
-    - Tertiary: Interaction controls (Hidden by default in collapsed cards).
-3. **Safety:**
-    - **Strict Clipping:** Data curves are clipped at the top margin (y=65) to prevent overlapping with phase labels.
-    - **Prevention:** Mouse wheel zoom disabled to prevent accidental triggering during page scrolling.
-
-## 7. Usage Guide
-
-1. **Open:** Simply open `oncotracker v0.5.6.html` in any modern browser (Chrome, Edge, Safari).
-2. **View:**
-    - **Red Dots:** Indicate values exceeding medical thresholds.
-    - **Phase Labels:** Show Cycle name + Duration (e.g., "C1 (21天)") with multi-line scheme names.
-    - **X-Axis:** Monthly labels with mid-month tick marks and year labels below.
-3. **Interact:**
-    - **Legend:** Click legend items in the toolbar to toggle metric visibility.
-    - **Opacity Slider:** Adjust phase background transparency using the "背景透明度" slider.
-    - **Zoom:** Use "横纵比：+ -" buttons or "全病程" to reset view.
-    - **Metric Cards:** Click a card in the bottom panel to expand fine-tuning controls.
-    - **Adjust:** Use sliders to Shift (-200 to +200) or Scale specific curves.
-4. **Print:** Click the "Print" button in the header for a clean A4 report.
-5. **Reset:** Click the "Reset" button to clear all saved customizations and restore default settings.
-
-## 8. Future Roadmap
-
-- [ ] **Python Backend:** Create a Flask/FastAPI wrapper to serve dynamic JSON.
-- [ ] **Data Export:** Button to export current view as PNG/PDF image.
-- [ ] **Annotation:** Allow doctors to click and add text notes to specific data points.
-
-## 9. Localization & Terminology
-
-To maintain consistency across future updates, the following tables define the standard Chinese/English mappings used in the project.
-
-### 9.1. UI Interface
-
-| Chinese (UI) | English (Internal/Meaning) | Context |
-| :--- | :--- | :--- |
-| **背景透明度** | Phase Opacity | Slider in toolbar to adjust background transparency. |
-| **横纵比** | Aspect Ratio (X) / Zoom X | Horizontal zoom controls. |
-| **纵横比** | Aspect Ratio (Y) / Zoom Y | Vertical height controls. |
-| **全病程** | Full Course / Reset | Button to reset X-axis zoom to show all data. |
-| **自适应** | Auto Fit | Button to reset Y-axis height to default. |
-| **周期** | Cycle | Toggle for showing/hiding cycle phases. |
-| **项目** | Item / Event | Toggle for showing/hiding medical events. |
-| **方案** | Scheme | Toggle for showing/hiding treatment schemes. |
-| **显示数值** | Show Values | Button to show numeric labels on data points. |
-| **隐藏数值** | Hide Values | Button to hide numeric labels on data points. |
-
-### 9.2. Common Data Keys
-
-| Chinese (Data) | English (Medical/System) | Notes |
-| :--- | :--- | :--- |
-| **体重** | Weight | Default active metric. |
-| **握力** | Grip Strength | |
-| **白细胞** | White Blood Cells (WBC) | |
-| **血小板** | Platelets (PLT) | |
-| **中性粒细胞** | Neutrophils (NEUT) | |
-| **谷草转氨酶** | AST | |
-| **谷丙转氨酶** | ALT | |
-| **新辅助** | Neoadjuvant | Treatment phase type. |
-| **辅助** | Adjuvant | Treatment phase type. |
-| **术** | Surgery | Suffix indicating surgery (e.g., 胃癌根治术). |
 
 ---
-*Documentation generated by Assistant based on project codebase version `2025-11-24`.*
+
+## ⚡ Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- npm or pnpm
+- Supabase account (for auth & database)
+
+### Installation
+
+```bash
+# Clone and navigate
+cd "oncotracker v0.5/oncotracker-next"
+
+# Install dependencies
+npm install
+
+# Configure environment
+cp .env.example .env.local
+# Edit .env.local with your Supabase credentials
+
+# Run development server
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Default Credentials
+
+| Role | Email | Password |
+|------|-------|----------|
+| Doctor | See `CREDENTIALS.local.md` | — |
+| Patient | Auto-generated on creation | — |
+
+---
+
+## 🔑 Key Features
+
+### 1. Patient Journey Visualization
+
+The heart of OncoTracker — an interactive D3.js chart showing:
+
+| Layer | Description |
+|-------|-------------|
+| **Phases** | Treatment cycles (C1, C2, AS0-AS48) with duration labels |
+| **Events** | Surgeries, imaging, clinical milestones as vertical markers |
+| **Metrics** | Tumor markers plotted as curves with threshold alerts |
+| **Schemes** | Chemotherapy regimens displayed in phase headers |
+
+**Controls:**
+- 🔍 Zoom/Pan with mouse drag
+- 📊 Toggle metrics on/off
+- 🎨 Customize colors, scales, opacity
+- 🖨️ Print-optimized A4 landscape output
+
+### 2. AI-Powered Data Ingestion
+
+Upload any Excel file — the AI handles the rest:
+
+```
+Raw Excel → AI Analysis → Canonical Format → Visualization
+```
+
+**Capabilities:**
+- Automatic column detection (dates, phases, metrics)
+- Chinese/English header translation
+- Custom metric preservation (e.g., CYFRA21-1)
+- Excel serial date conversion
+- Validation against Zod schema
+
+### 3. Canonical Data Schema
+
+All patient data standardizes to the `张莉.xlsx` format:
+
+| Column | Header | Description |
+|--------|--------|-------------|
+| A | 子类 | Date (Excel serial or ISO) |
+| B | 项目 | Phase name (C1D1, AS17, etc.) |
+| C | 周期 | Current cycle |
+| D | — | Previous cycle |
+| E | 方案 | Treatment scheme |
+| F | 处置 | Clinical event |
+| G | 方案 | Scheme detail |
+| H+ | Metrics | Weight, CEA, MRD, etc. |
+
+### 4. Metric Dictionary
+
+Bilingual support with 25+ predefined metrics:
+
+| Category | Metrics |
+|----------|---------|
+| **体能负荷** | Weight, Handgrip, ECOG |
+| **分子负荷** | CEA, CA19-9, CA125, AFP, MRD, CYFRA21-1 |
+| **影像负荷** | 肺, 肝脏, 淋巴, 盆腔 |
+| **副作用** | 白细胞, 血小板, 中性粒细胞, AST, ALT |
+| **其他指标** | Custom/unknown metrics preserved |
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| **Frontend** | Next.js 14 (App Router), React 18, TypeScript |
+| **Styling** | Tailwind CSS, Shadcn/UI |
+| **Visualization** | D3.js v7 |
+| **Backend** | Supabase (PostgreSQL, Auth, Storage) |
+| **AI** | Alibaba Qwen-72B via Vercel AI SDK |
+| **Validation** | Zod |
+
+---
+
+## 📁 Data Files
+
+| File | Purpose |
+|------|---------|
+| `张莉.xlsx` | **Canonical reference** — defines standard schema |
+| `高玉修.xlsx` | Patient data (after AI transformation) |
+| `dataset*.xlsx` | Legacy sample datasets |
+
+---
+
+## 🔒 Security
+
+- **Row-Level Security (RLS)** — Patients see only their own data
+- **Role-Based Access Control** — Doctor, Patient, Supervisor roles
+- **Server Actions** — Secure data mutations
+- **Environment Variables** — Secrets never exposed to client
+
+---
+
+## 📝 Documentation
+
+| Document | Description |
+|----------|-------------|
+| `CHANGELOG.md` | Version history with detailed release notes |
+| `MASTERPLAN.md` | Product roadmap and architecture decisions |
+| `debuglog.md` | Technical debugging log with solutions |
+| `library.md` | Medical term abbreviation mappings |
+
+---
+
+## 🚀 Development
+
+### Scripts
+
+```bash
+npm run dev          # Start development server
+npm run build        # Production build
+npm run lint         # ESLint check
+npm run type-check   # TypeScript validation
+```
+
+### Key Commands
+
+```bash
+# Run migration script
+npx tsx scripts/migrate-to-canonical.ts
+
+# Seed test data
+npx tsx scripts/seed_data.ts
+
+# Reset password
+npx tsx scripts/reset_password.ts <email>
+```
+
+---
+
+## 📊 API Routes
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/data/current` | GET | Fetch current patient dataset |
+| `/api/agent/run` | POST | Execute AI agent tasks |
+
+---
+
+## 🎨 The Golden Rule
+
+> **`oncotracker v0.6.2.html` is the ABSOLUTE SOURCE OF TRUTH** for:
+> 1. Visual Design — Colors, layout, typography
+> 2. D3.js Algorithms — Scaling, rendering, interactions
+> 3. Data Processing — Parsing, cleaning, mapping
+>
+> **Any React development MUST be a pixel-perfect port.**
+
+---
+
+## 📈 Version History
+
+| Version | Date | Highlights |
+|---------|------|------------|
+| **v0.7.1** | 2025-12-03 | Canonical schema, custom metrics, AI redesign |
+| **v0.7.0** | 2025-12-03 | Mobile optimization, LLM integration, print enhancements |
+| **v0.6.3** | 2025-12-01 | Auth migration, patient CRUD, delete functionality |
+| **v0.6.2** | 2025-11-30 | Print optimization, data automation |
+
+See `CHANGELOG.md` for full history.
+
+---
+
+## 🤝 Contributing
+
+This is a private medical application. Contact the project owner for contribution guidelines.
+
+---
+
+## 📜 License
+
+Private — All rights reserved.
+
+---
+
+<p align="center">
+  <strong>Built for Oncology. Designed for Clarity.</strong>
+</p>
