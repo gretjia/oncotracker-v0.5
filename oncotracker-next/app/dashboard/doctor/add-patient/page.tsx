@@ -56,7 +56,12 @@ export default function AddPatientPage() {
             // So we should probably pass the mapping as a hidden field or separate argument.
 
             if (mappingResult) {
-                formData.append('mapping', JSON.stringify(mappingResult.mapping));
+                // Send the whole result including isCanonical flag
+                // Backend expects: { isCanonical: boolean, mapping: object | null }
+                formData.append('mapping', JSON.stringify({
+                    isCanonical: mappingResult.isCanonical,
+                    mapping: mappingResult.mapping
+                }));
             }
 
             const result = await createPatientAction(formData);
@@ -116,11 +121,21 @@ export default function AddPatientPage() {
                             </div>
                         )}
 
-                        {mappingResult && (
+                        {mappingResult && mappingResult.isCanonical && (
+                            <div className="p-3 bg-emerald-50 text-emerald-700 text-sm rounded border border-emerald-100">
+                                <p className="font-bold mb-1">✓ Canonical Format Detected</p>
+                                <p className="text-xs">
+                                    File is already in 张莉.xlsx standard format. 
+                                    Data will be preserved as-is without transformation.
+                                </p>
+                            </div>
+                        )}
+
+                        {mappingResult && !mappingResult.isCanonical && mappingResult.mapping && (
                             <div className="p-3 bg-emerald-50 text-emerald-700 text-sm rounded border border-emerald-100">
                                 <p className="font-bold mb-1">AI Analysis Complete:</p>
                                 <ul className="list-disc pl-4 space-y-0.5 text-xs">
-                                    <li>Date Column: <strong>{mappingResult.mapping.date_col}</strong></li>
+                                    <li>Date Column: <strong>{mappingResult.mapping.date_col || 'auto-detect'}</strong></li>
                                     <li>Metrics Found: <strong>{Object.keys(mappingResult.mapping.metrics || {}).length}</strong></li>
                                     <li>Events Found: <strong>{mappingResult.mapping.events?.length || 0}</strong></li>
                                 </ul>

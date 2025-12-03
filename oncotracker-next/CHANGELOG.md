@@ -1,5 +1,40 @@
 # Changelog
 
+## [v0.7.1] - 2025-12-03
+
+### Added
+
+- **Data Standardization**:
+  - **Canonical Schema**: Established `张莉.xlsx` as the canonical data structure for all patient uploads.
+  - **Metric Dictionary**: Created `lib/schema/metric-dictionary.ts` with bilingual (Chinese/English) metric definitions.
+  - **Schema Validation**: Added Zod-based validation in `lib/schema/oncology-dataset.schema.ts`.
+  - **Data Transformer**: New `lib/schema/data-transformer.ts` to convert any uploaded data to canonical format.
+  - **Migration Script**: Added `scripts/migrate-to-canonical.ts` for batch migration of existing files.
+
+- **Custom Metrics Support**:
+  - AI now preserves **unknown/custom metrics** (e.g., "细胞角蛋白19片段") with `category: "CUSTOM"`.
+  - Added CYFRA21-1, NSE, SCC to the predefined metric dictionary.
+  - Chart displays custom metrics under "其他指标" (Other Metrics) category.
+
+- **AI Prompt Redesign**:
+  - New centralized prompts in `lib/ai/prompts/data-mapping.ts`.
+  - Enforces canonical schema immutability - AI transforms TO the schema, never changes it.
+  - Intelligent date column detection (looks for Excel serial dates 40000-50000).
+  - Explicit column index mapping for precision.
+
+### Fixed
+
+- **Patient Data Loading**: Fixed issue where wrong patient's data was displayed. Now correctly loads by `patientId` from URL.
+- **MRD Data Not Visible**: X-axis domain now includes metric data point dates (not just phases/events).
+- **Format Detection**: Fixed canonical format detection to check Chinese headers ("子类", "项目", "处置").
+- **Duplicate Column Handling**: Fixed "方案" column mapping (two columns with same name).
+- **Date Parsing Crash**: Added error handling for invalid date values during upload.
+
+### Changed
+
+- **Visualizer Columns**: Fixed column mappings to match canonical 7-column structure (Date, Phase, Cycle, PrevCycle, Scheme, Event, SchemeDetail).
+- **AI Integration**: `tryQuickMapping` now requires "子类" header to detect canonical format.
+
 ## [v0.7.0] - 2025-12-03
 
 ### Added

@@ -1,0 +1,321 @@
+--- Process Start ---
+Using AI Mapping: {
+  "date_col": null,
+  "metrics": {
+    "体能负荷": "Performance Status",
+    "分子负荷": "Molecular Burden",
+    "影像负荷": "Tumor Burden"
+  },
+  "events": [
+    "分类",
+    "节拍",
+    "事件"
+  ]
+}
+Detected Header Row Index: 1
+Raw Headers: ["肿瘤病程周期表"]
+Column Map: {"肿瘤病程周期表":0}
+Row 2: DateCol=, DateIdx=undefined, DateVal=null
+Skipping Row 2: Invalid Date
+Row 3: DateCol=, DateIdx=undefined, DateVal=null
+Skipping Row 3: Invalid Date
+Row 4: DateCol=, DateIdx=undefined, DateVal=null
+Skipping Row 4: Invalid Date
+Row 5: DateCol=, DateIdx=undefined, DateVal=null
+Skipping Row 5: Invalid Date
+Row 6: DateCol=, DateIdx=undefined, DateVal=null
+Skipping Row 6: Invalid Date
+Row 7: DateCol=, DateIdx=undefined, DateVal=null
+Skipping Row 7: Invalid Date
+Row 8: DateCol=, DateIdx=undefined, DateVal=null
+Skipping Row 8: Invalid Date
+Row 9: DateCol=, DateIdx=undefined, DateVal=null
+Skipping Row 9: Invalid Date
+Row 10: DateCol=, DateIdx=undefined, DateVal=null
+Skipping Row 10: Invalid Date
+Row 11: DateCol=, DateIdx=undefined, DateVal=null
+Skipping Row 11: Invalid Date
+Row 12: DateCol=, DateIdx=undefined, DateVal=null
+Skipping Row 12: Invalid Date
+Row 13: DateCol=, DateIdx=undefined, DateVal=null
+Skipping Row 13: Invalid Date
+Row 14: DateCol=, DateIdx=undefined, DateVal=null
+Skipping Row 14: Invalid Date
+Row 15: DateCol=, DateIdx=undefined, DateVal=null
+Skipping Row 15: Invalid Date
+Row 16: DateCol=, DateIdx=undefined, DateVal=null
+Skipping Row 16: Invalid Date
+Processed 0 data rows.
+Total Standard Data Rows: 4
+--- Process Start ---
+Using AI Mapping: {
+  "date_col": "日期\\u5355位",
+  "metrics": {
+    "KG": "Weight",
+    "mtm/ml": "Lab Result",
+    "0-4.7": "Tumor Burden",
+    "<3.3": "Lab Result",
+    "<27": "Lab Result",
+    "<35": "Lab Result",
+    "<7": "Lab Result",
+    "mm": "Tumor Size"
+  },
+  "events": [
+    "当下周期",
+    "前序周期",
+    "新辅助"
+  ]
+}
+Detected Header Row Index: 8
+Raw Headers: ["日期\\单位",null,"当下周期","前序周期",null,null,null,"KG","KG",null,"mtm/ml","mtm/ml","0-4.7","<3.3","<27","<35","<7","mm","mm","mm","mm"]
+Column Map: {"日期\\单位":0,"当下周期":2,"前序周期":3,"KG":8,"mtm/ml":11,"0-4.7":12,"<3.3":13,"<27":14,"<35":15,"<7":16,"mm":20}
+Row 9: DateCol=日期\u5355位, DateIdx=0, DateVal=45941
+Row 10: DateCol=日期\u5355位, DateIdx=0, DateVal=45960
+Row 11: DateCol=日期\u5355位, DateIdx=0, DateVal=45961
+Row 12: DateCol=日期\u5355位, DateIdx=0, DateVal=45965
+Row 13: DateCol=日期\u5355位, DateIdx=0, DateVal=45975
+Row 14: DateCol=日期\u5355位, DateIdx=0, DateVal=45983
+Row 15: DateCol=日期\u5355位, DateIdx=0, DateVal=undefined
+Skipping Row 15: Invalid Date
+Row 16: DateCol=日期\u5355位, DateIdx=0, DateVal=undefined
+Skipping Row 16: Invalid Date
+Processed 6 data rows.
+Total Standard Data Rows: 10
+--- Process Start (Schema v1.0.0) ---
+Patient: 张莉新, File: [Lab Test]_治疗周期随访_20251126.1744.xlsx
+Raw data rows: 92
+Using AI Mapping with CANONICAL schema: {
+  "date_col": "日期\\单位",
+  "metrics": {
+    "H": "Weight",
+    "I": "Handgrip",
+    "K": "MRD",
+    "L": "aMRD",
+    "M": "CEA",
+    "N": "HE4",
+    "O": "CA19-9",
+    "P": "CA724",
+    "Q": "ROMA绝经后指数",
+    "R": "ROMA绝经前指数",
+    "S": "CA125",
+    "T": "AFP",
+    "U": "肺",
+    "V": "肝脏",
+    "W": "淋巴",
+    "X": "盆腔"
+  },
+  "events": [
+    "B",
+    "当下周期",
+    "F"
+  ]
+}
+Transform SUCCESS: 85 data rows, 0 metrics
+Extracted 0 observations for DB
+Writing CANONICAL format to: /Users/zephryj/Documents/oncotracker/oncotracker v0.5/oncotracker-next/data/张莉新.xlsx
+File saved successfully
+--- Process Complete ---
+
+--- Process Start (Schema v1.0.0) ---
+Patient: 张莉, File: [Lab Test]_治疗周期随访_20251126.1744.xlsx
+Raw data rows: 92
+Using AI Mapping with CANONICAL schema: {
+  "date_col": "日期\\单位",
+  "metrics": {
+    "<5": "白细胞",
+    "<76.2": "血小板",
+    "<30": "中性粒细胞",
+    "<8.94": "谷草转氨酶",
+    "<29.9": "谷丙转氨酶"
+  },
+  "events": [
+    "项目",
+    "当下周期",
+    "处置"
+  ]
+}
+Transform SUCCESS: 85 data rows, 0 metrics
+Extracted 0 observations for DB
+Writing CANONICAL format to: /Users/zephryj/Documents/oncotracker/oncotracker v0.5/oncotracker-next/data/张莉.xlsx
+File saved successfully
+--- Process Complete ---
+
+--- Process Start (Schema v1.0.0) ---
+Patient: 张莉, File: [Lab Test]_治疗周期随访_20251126.1744.xlsx
+Raw data rows: 92
+Using AI Mapping with CANONICAL schema: {
+  "date_col": "子类",
+  "metrics": {
+    "Weight": "Weight",
+    "Handgrip": "Handgrip",
+    "ECOG": "ECOG",
+    "MRD": "MRD",
+    "aMRD": "aMRD",
+    "CEA": "CEA",
+    "HE4": "HE4",
+    "CA19-9": "CA19-9",
+    "CA724": "CA724",
+    "ROMA绝经后指数": "ROMA绝经后指数",
+    "ROMA绝经前指数": "ROMA绝经前指数",
+    "CA125": "CA125",
+    "AFP": "AFP",
+    "肺": "肺",
+    "肝脏": "肝脏",
+    "淋巴": "淋巴",
+    "盆腔": "盆腔",
+    "白细胞": "白细胞",
+    "血小板": "血小板",
+    "中性粒细胞": "中性粒细胞",
+    "谷草转氨酶": "谷草转氨酶",
+    "谷丙转氨酶": "谷丙转氨酶"
+  },
+  "events": [
+    "项目",
+    "处置"
+  ]
+}
+Transform SUCCESS: 85 data rows, 22 metrics
+Extracted 200 observations for DB
+Inserting 200 observations to DB...
+DB insert SUCCESS
+Writing CANONICAL format to: /Users/zephryj/Documents/oncotracker/oncotracker v0.5/oncotracker-next/data/张莉.xlsx
+File saved successfully
+--- Process Complete ---
+
+--- Process Start (Schema v1.0.0) ---
+Patient: 张莉, File: [Lab Test]_治疗周期随访_20251126.1744.xlsx, isAlreadyCanonical: true
+Raw data rows: 92
+File is ALREADY CANONICAL - skipping transformation, saving as-is
+Canonical data preserved: 91 rows
+Extracted 200 observations from canonical data
+Inserting 200 observations to DB...
+DB insert SUCCESS
+Writing CANONICAL format to: /Users/zephryj/Documents/oncotracker/oncotracker v0.5/oncotracker-next/data/张莉.xlsx
+File saved successfully
+--- Process Complete ---
+
+--- Process Start (Schema v1.0.0) ---
+Patient: 高玉修, File: 20251117肿瘤治疗周期跟踪示意图.xlsx, isAlreadyCanonical: true
+Raw data rows: 17
+File is ALREADY CANONICAL - skipping transformation, saving as-is
+Canonical data preserved: 16 rows
+--- Process Start (Schema v1.0.0) ---
+Patient: 高玉修, File: 20251117肿瘤治疗周期跟踪示意图.xlsx, isAlreadyCanonical: true
+Raw data rows: 17
+File is ALREADY CANONICAL - skipping transformation, saving as-is
+Canonical data preserved: 16 rows
+--- Process Start (Schema v1.0.0) ---
+Patient: 高玉修, File: 20251117肿瘤治疗周期跟踪示意图.xlsx, isAlreadyCanonical: false
+Raw data rows: 17
+Using AI Mapping with CANONICAL schema: {
+  "date_col": "项目",
+  "metrics": {
+    "体重": "Weight",
+    "握力": "Handgrip",
+    "ECOG": "ECOG",
+    "MRD": "MRD",
+    "aMRD": "aMRD",
+    "CEA": "CEA",
+    "CA19-9": "CA19-9",
+    "CA125": "CA125",
+    "AFP": "AFP",
+    "肺": "肺",
+    "肝脏": "肝脏",
+    "淋巴": "淋巴",
+    "盆腔": "盆腔",
+    "白细胞": "白细胞",
+    "血小板": "血小板",
+    "中性粒细胞": "中性粒细胞",
+    "谷草转氨酶": "谷草转氨酶",
+    "谷丙转氨酶": "谷丙转氨酶"
+  },
+  "events": [
+    "项目",
+    "处置",
+    "项目"
+  ]
+}
+Transform FAILED: No valid data rows found
+--- Process Start (Schema v1.0.0) ---
+Patient: 高玉修, File: 20251117肿瘤治疗周期跟踪示意图.xlsx, isAlreadyCanonical: false
+Raw data rows: 17
+Using AI Mapping with CANONICAL schema: {
+  "date_col": "column_0",
+  "date_col_index": 0,
+  "metrics": {
+    "体重": "Weight",
+    "握力": "Handgrip",
+    "ECOG": "ECOG",
+    "MRD": "MRD",
+    "aMRD": "aMRD",
+    "CEA": "CEA",
+    "CA19-9": "CA19-9",
+    "CA125": "CA125",
+    "AFP": "AFP",
+    "肺": "肺",
+    "肝脏": "肝脏",
+    "淋巴": "淋巴",
+    "盆腔": "盆腔",
+    "白细胞": "白细胞",
+    "血小板": "血小板",
+    "中性粒细胞": "中性粒细胞",
+    "谷草转氨酶": "谷草转氨酶",
+    "谷丙转氨酶": "谷丙转氨酶"
+  },
+  "events": [
+    "项目",
+    "处置",
+    "周期",
+    "方案"
+  ]
+}
+Transform SUCCESS: 6 data rows, 18 metrics
+Extracted 3 observations for DB
+Inserting 3 observations to DB...
+DB insert SUCCESS
+Writing CANONICAL format to: /Users/zephryj/Documents/oncotracker/oncotracker v0.5/oncotracker-next/data/高玉修.xlsx
+File saved successfully
+--- Process Complete ---
+
+--- Process Start (Schema v1.0.0) ---
+Patient: 高玉修, File: 20251117肿瘤治疗周期跟踪示意图.xlsx, isAlreadyCanonical: false
+Raw data rows: 17
+Using AI Mapping with CANONICAL schema: {
+  "date_col": "column_0",
+  "date_col_index": 0,
+  "metrics": {
+    "体重": "Weight",
+    "握力": "Handgrip",
+    "ECOG": "ECOG",
+    "MRD": "MRD",
+    "aMRD": "aMRD",
+    "CEA": "CEA",
+    "细胞角蛋白19片段": "细胞角蛋白19片段",
+    "CA19-9": "CA19-9",
+    "CA125": "CA125",
+    "AFP": "AFP",
+    "肺": "肺",
+    "肝脏": "肝脏",
+    "淋巴": "淋巴",
+    "盆腔": "盆腔",
+    "白细胞": "白细胞",
+    "血小板": "血小板",
+    "中性粒细胞": "中性粒细胞",
+    "谷草转氨酶": "谷草转氨酶",
+    "谷丙转氨酶": "谷丙转氨酶"
+  },
+  "events": [
+    "项目",
+    "处置",
+    "周期",
+    "方案"
+  ]
+}
+Transform SUCCESS: 6 data rows, 19 metrics
+Extracted 4 observations for DB
+Inserting 4 observations to DB...
+DB insert SUCCESS
+Writing CANONICAL format to: /Users/zephryj/Documents/oncotracker/oncotracker v0.5/oncotracker-next/data/高玉修.xlsx
+File saved successfully
+--- Process Complete ---
+

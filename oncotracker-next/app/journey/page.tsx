@@ -2,8 +2,13 @@ import { JourneyPageClient } from '@/components/JourneyPageClient';
 import { loadDataset } from '@/lib/data-loader';
 import { Metadata } from 'next';
 
-export async function generateMetadata(): Promise<Metadata> {
-    const dataset = await loadDataset();
+interface PageProps {
+    searchParams: Promise<{ patientId?: string }>;
+}
+
+export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
+    const params = await searchParams;
+    const dataset = await loadDataset(params.patientId);
     const title = dataset.patientName
         ? `${dataset.patientName}'s Patient Journey`
         : 'Patient Journey';
@@ -13,8 +18,9 @@ export async function generateMetadata(): Promise<Metadata> {
     };
 }
 
-export default async function JourneyPage() {
-    const dataset = await loadDataset();
+export default async function JourneyPage({ searchParams }: PageProps) {
+    const params = await searchParams;
+    const dataset = await loadDataset(params.patientId);
 
     return (
         <JourneyPageClient dataset={dataset} />

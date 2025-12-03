@@ -13,6 +13,7 @@ interface PatientCardProps {
 
 export function PatientCard({ patient }: PatientCardProps) {
     const [isDeleted, setIsDeleted] = useState(false);
+    const [isConfirming, setIsConfirming] = useState(false);
 
     if (isDeleted) return null;
 
@@ -38,9 +39,7 @@ export function PatientCard({ patient }: PatientCardProps) {
                 <div className="flex items-center gap-2">
                     <div className="text-right mr-4 hidden md:block">
                         <div className="text-xs text-slate-400">Date Added</div>
-                        <div className="text-sm font-medium text-slate-700">
-                            {new Date(patient.created_at).toLocaleDateString()}
-                        </div>
+                        {new Date(patient.created_at).toLocaleDateString('zh-CN')}
                     </div>
                     <Link href={`/journey?patientId=${patient.id}`}>
                         <Button variant="outline" size="sm" className="gap-2">
@@ -52,23 +51,44 @@ export function PatientCard({ patient }: PatientCardProps) {
                             <FileSpreadsheet className="w-4 h-4" /> Edit Data
                         </Button>
                     </Link>
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                        onClick={async () => {
-                            if (window.confirm('Are you sure you want to delete this patient? This action cannot be undone.')) {
-                                const result = await deletePatientAction(patient.id);
-                                if (result.success) {
-                                    setIsDeleted(true);
-                                } else {
-                                    alert('Failed to delete patient: ' + result.error);
-                                }
-                            }
-                        }}
-                    >
-                        <Trash2 className="w-4 h-4" />
-                    </Button>
+                    {isConfirming ? (
+                        <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2 duration-200">
+                            <span className="text-xs font-bold text-red-600">Confirm Delete?</span>
+                            <Button
+                                variant="destructive"
+                                size="sm"
+                                className="h-7 px-2 text-xs"
+                                onClick={async () => {
+                                    const result = await deletePatientAction(patient.id);
+                                    if (result.success) {
+                                        setIsDeleted(true);
+                                    } else {
+                                        alert('Failed to delete patient: ' + result.error);
+                                        setIsConfirming(false);
+                                    }
+                                }}
+                            >
+                                Yes
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-7 px-2 text-xs"
+                                onClick={() => setIsConfirming(false)}
+                            >
+                                No
+                            </Button>
+                        </div>
+                    ) : (
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                            onClick={() => setIsConfirming(true)}
+                        >
+                            <Trash2 className="w-4 h-4" />
+                        </Button>
+                    )}
                 </div>
             </CardContent>
         </Card>

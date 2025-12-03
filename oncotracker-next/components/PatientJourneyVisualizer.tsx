@@ -2,8 +2,9 @@
 
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as d3 from 'd3';
-import { ArrowLeftRight, ArrowUpDown, Plus, Minus, SlidersHorizontal, ChevronUp, ChevronDown, Settings2 } from 'lucide-react';
+import { ArrowLeftRight, ArrowUpDown, Plus, Minus, SlidersHorizontal, ChevronUp, ChevronDown, Settings2, Activity } from 'lucide-react';
 
+import Link from 'next/link';
 import { FormalDataset, AppStateData, AppStateView, Metric, Phase, EventMarker } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -107,33 +108,64 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
 
     // Process Data (Memoized)
     useEffect(() => {
+        console.log("Visualizer: VERSION 3.0 - AUTO-DETECT FORMAT");
         if (!dataset || !dataset.FormalDataset) return;
 
-        const rawData = dataset.FormalDataset;
-        const rootKey = Object.keys(dataset)[0] === 'FormalDataset' ? 'FormalDataset' : Object.keys(dataset)[0]; // Handle wrapper if needed, but prop implies unwrapped or specific structure
-        // Actually the prop is FormalDataset, so rawData IS the array if passed correctly.
-        // Let's assume dataset IS the object { FormalDataset: [...] }
-
         const rows = dataset.FormalDataset;
-        const headerRow = rows[2]; // Metric Names
-        const unitRow = rows[3];   // Units
+        const headerRow = rows[2]; // Metric Names row
+        const unitRow = rows[3];   // Units row
+        
+        // Auto-detect data format by checking header row
+        // CANONICAL Format (张莉.xlsx style): 
+        //   Col 0: 子类, Col 1: 项目, Col 2: 周期, Col 3: (empty/PrevCycle), 
+        //   Col 4: 方案, Col 5: 处置, Col 6: 方案 (detail), Col 7+: Metrics
+        // LEGACY Format: older structure without proper column layout
+        
+        // Detect canonical format by checking key headers
+        const isCanonicalFormat = headerRow && (
+            headerRow["Unnamed: 0"] === "子类" &&
+            headerRow["Unnamed: 1"] === "项目" &&
+            headerRow["Unnamed: 5"] === "处置"
+        );
+        
+        console.log("Visualizer: Detected format:", isCanonicalFormat ? "Canonical (张莉.xlsx)" : "Legacy");
+        console.log("Visualizer: Header row sample:", {
+            col0: headerRow?.["Unnamed: 0"],
+            col1: headerRow?.["Unnamed: 1"],
+            col4: headerRow?.["Unnamed: 4"],
+            col5: headerRow?.["Unnamed: 5"],
+            col6: headerRow?.["Unnamed: 6"],
+        });
+        
+        // Column mappings for CANONICAL format (matches 张莉.xlsx structure)
         const COL_DATE = "Unnamed: 0";
         const COL_PHASE = "Unnamed: 1";
         const COL_CYCLE = "Unnamed: 2";
-        const COL_SCHEME = "Unnamed: 4";
-        const COL_EVENT = "Unnamed: 5";
+        const COL_SCHEME = "Unnamed: 4";  // First 方案
+        const COL_EVENT = "Unnamed: 5";   // 处置
+        const COL_SCHEME_DETAIL = "Unnamed: 6"; // Second 方案 (detail)
 
         const newData: AppStateData = { phases: [], events: [], metrics: {}, schemes: [], totalPoints: 0 };
         const metricMap: Record<string, string> = {};
 
         // 1. Parse Headers
+        if (!headerRow) {
+            console.warn("Visualizer: No header row found in dataset.");
+            return;
+        }
+        console.log("Visualizer: Header Row:", headerRow);
+
+        // Fixed columns to exclude from metrics
+        const FIXED_COLS = [COL_DATE, COL_PHASE, COL_CYCLE, "Unnamed: 3", COL_SCHEME, COL_EVENT, COL_SCHEME_DETAIL];
+        
         Object.entries(headerRow).forEach(([key, val]) => {
-            if (val && ![COL_DATE, COL_PHASE, COL_CYCLE, COL_EVENT, COL_SCHEME].includes(key)) {
+            if (val && !FIXED_COLS.includes(key)) {
                 metricMap[key] = val;
                 if (!newData.metrics[val]) {
+                    // ... (existing metric init logic) ...
                     const colorIdx = Object.keys(newData.metrics).length % COLORS.length;
                     let threshold = null;
-                    if (unitRow[key] && typeof unitRow[key] === 'string') {
+                    if (unitRow && unitRow[key] && typeof unitRow[key] === 'string') {
                         const match = unitRow[key].match(/[<>]\s*([\d\.]+)/);
                         if (match) threshold = parseFloat(match[1]);
                     }
@@ -142,15 +174,16 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
                         id: key, name: val, data: [], color: COLORS[colorIdx],
                         scale: 1.0, offset: 0, opacity: 1.0, showLine: true, showValues: false, mid: 0,
                         active: false, expanded: false,
-                        unit: unitRow[key] || '', rangeMin: 0, rangeMax: 0, threshold: threshold, baseScale: 1.0
+                        unit: (unitRow && unitRow[key]) || '', rangeMin: 0, rangeMax: 0, threshold: threshold, baseScale: 1.0
                     };
                 }
             }
         });
+        console.log("Visualizer: Parsed Metrics:", Object.keys(newData.metrics));
 
         // 2. Parse Rows
         const timeline: { date: Date; row: any }[] = [];
-        rows.slice(4).forEach(row => { // Data starts at index 4
+        rows.slice(4).forEach((row, idx) => { // Data starts at index 4
             let date: Date;
             const rawDate = row[COL_DATE];
 
@@ -161,25 +194,44 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
             } else if (typeof rawDate === 'string') {
                 date = new Date(rawDate);
             } else {
+                if (idx < 5) console.log(`Visualizer: Row ${idx} skipped (invalid date type):`, rawDate);
                 return;
             }
 
-            if (isNaN(date.getTime())) return;
+            if (isNaN(date.getTime())) {
+                if (idx < 5) console.log(`Visualizer: Row ${idx} skipped (invalid date value):`, rawDate);
+                return;
+            }
+
+            if (idx < 5) console.log(`Visualizer: Row ${idx} Date:`, date.toLocaleDateString());
 
             timeline.push({ date, row });
             if (row[COL_EVENT]) newData.events.push({ date, name: row[COL_EVENT], overlapIndex: 0 });
 
             Object.keys(metricMap).forEach(key => {
                 let rawVal = row[key];
+                const metricName = metricMap[key];
+
                 if (rawVal != null && rawVal !== "") {
                     if (typeof rawVal === 'string') rawVal = rawVal.replace(/,/g, '').replace(/[<>]/g, '');
                     const num = parseFloat(rawVal);
+
+                    // Debug logging for MRD
+                    if (metricName === 'MRD') {
+                        console.log(`Visualizer: [MRD] Row ${idx}, key=${key}, rawVal=${rawVal}, num=${num}`);
+                    }
+
                     if (!isNaN(num)) {
-                        const metric = newData.metrics[metricMap[key]];
+                        const metric = newData.metrics[metricName];
                         if (metric) {
                             const isAlert = (metric.threshold !== null && num > metric.threshold);
                             metric.data.push({ date, value: num, isAlert });
                             newData.totalPoints++;
+                            
+                            // Debug for MRD
+                            if (metricName === 'MRD') {
+                                console.log(`Visualizer: [MRD] Data point added: date=${date.toISOString()}, value=${num}, total=${metric.data.length}`);
+                            }
                         }
                     }
                 }
@@ -315,7 +367,26 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
         });
 
         // Default Active Metrics
-        ["体重", "CEA", "CA125", "MRD"].forEach(n => { if (newData.metrics[n]) newData.metrics[n].active = true; });
+        // Default Active Metrics
+        const preferredMetrics = ["体重", "Weight", "CEA", "CA125", "MRD", "Tumor Burden", "AFP"];
+        preferredMetrics.forEach(n => { if (newData.metrics[n]) newData.metrics[n].active = true; });
+
+        // Fallback: If no metrics are active, activate the first 5
+        const activeCount = Object.values(newData.metrics).filter(m => m.active).length;
+        if (activeCount === 0) {
+            Object.values(newData.metrics).slice(0, 5).forEach(m => m.active = true);
+        }
+
+        // DEBUG LOGS
+        const activeMetrics = Object.values(newData.metrics).filter(m => m.active);
+        console.log("Visualizer: Final Active Metrics:", activeMetrics.map(m => m.name));
+        activeMetrics.forEach(m => {
+            console.log(`Visualizer: Metric [${m.name}] has ${m.data.length} data points.`);
+            if (m.data.length > 0) {
+                console.log(`   Sample Data:`, m.data.slice(0, 3));
+            }
+        });
+        console.log("Visualizer: Total Timeline Events:", timeline.length);
 
         setData(newData);
     }, [dataset]);
@@ -352,10 +423,30 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
         defs.append("clipPath").attr("id", "mainClip").append("rect").attr("x", view.margin.left).attr("y", 0).attr("width", Math.max(0, width - view.margin.left - view.margin.right)).attr("height", clipHeight);
         defs.append("clipPath").attr("id", "chartClip").append("rect").attr("x", view.margin.left).attr("y", view.margin.top).attr("width", Math.max(0, width - view.margin.left - view.margin.right)).attr("height", chartClipHeight);
 
-        const allDates = [...data.phases.map(p => p.start), ...data.phases.map(p => p.end), ...data.events.map(e => e.date)].filter(d => d);
+        // Collect ALL dates: from phases, events, AND metric data points
+        const allDates = [
+            ...data.phases.map(p => p.start), 
+            ...data.phases.map(p => p.end), 
+            ...data.events.map(e => e.date),
+            // Include metric data point dates to ensure they're within the visible range
+            ...Object.values(data.metrics).flatMap(m => m.data.map(d => d.date))
+        ].filter(d => d);
+        
+        console.log("Visualizer: All dates for domain:", allDates.length, "dates");
+        
         const domain = d3.extent(allDates) as [Date, Date];
-        if (domain[0]) domain[0] = new Date(domain[0].getTime() - 864000000);
-        if (domain[1]) domain[1] = new Date(domain[1].getTime() + 864000000);
+        if (domain[0]) domain[0] = new Date(domain[0].getTime() - 864000000); // -10 days
+        if (domain[1]) domain[1] = new Date(domain[1].getTime() + 864000000); // +10 days
+        
+        // Fallback: if no dates found, use a sensible default range
+        if (!domain[0] || !domain[1]) {
+            const now = new Date();
+            domain[0] = new Date(now.getTime() - 365 * 86400000);
+            domain[1] = now;
+            console.warn("Visualizer: No dates found, using default 1-year range");
+        }
+        
+        console.log("Visualizer: Domain:", domain[0]?.toLocaleDateString(), "-", domain[1]?.toLocaleDateString());
 
         const x = d3.scaleTime().domain(domain).range([view.margin.left, width - view.margin.right]);
         xRef.current = x;
@@ -606,20 +697,30 @@ export function PatientJourneyVisualizer({ dataset, highlightMetric }: PatientJo
     return (
         <div className="flex flex-col h-screen bg-slate-50 overflow-hidden">
             {/* Header */}
-            <header className="h-12 bg-white border-b border-slate-200 flex items-center justify-between px-4 flex-shrink-0 z-30 shadow-sm">
-                <div className="flex items-center gap-3">
-                    <div className="w-7 h-7 bg-slate-900 rounded flex items-center justify-center text-white shadow-sm">
-                        <i className="fa-solid fa-chart-line text-xs"></i>
+            {/* Header */}
+            <header className="h-14 bg-white/80 backdrop-blur-md border-b border-slate-200/60 flex items-center justify-between px-4 flex-shrink-0 z-30 sticky top-0">
+                <Link href="/dashboard/doctor" className="flex items-center gap-3 hover:opacity-80 transition-opacity group cursor-pointer">
+                    <div className="w-9 h-9 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 shadow-sm ring-1 ring-blue-100 group-hover:bg-blue-100 transition-colors">
+                        <Activity className="w-5 h-5" />
                     </div>
-                    <div>
-                        <h1 className="text-xs font-bold text-slate-900 uppercase tracking-wide">
-                            {dataset.patientName ? `Patient Journey: ${dataset.patientName}` : 'Patient Journey'}
+                    <div className="flex flex-col">
+                        <h1 className="text-sm font-bold text-slate-900 tracking-tight leading-none mb-0.5">
+                            {dataset.patientName ? (
+                                <span className="flex items-center gap-2">
+                                    PATIENT JOURNEY
+                                    <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                                    <span className="text-blue-700">{dataset.patientName}</span>
+                                </span>
+                            ) : 'PATIENT JOURNEY'}
                         </h1>
-                        <div className="text-[9px] text-slate-500 font-mono">ADVANCED UI</div>
+                        <div className="flex items-center gap-1.5">
+                            <span className="text-[10px] font-semibold text-slate-400 tracking-wider uppercase">OncoTracker</span>
+                            <span className="px-1.5 py-0.5 rounded-full bg-blue-50 text-[9px] font-bold text-blue-600 border border-blue-100">PRO</span>
+                        </div>
                     </div>
-                </div>
+                </Link>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => window.print()}>Print</Button>
+                    <Button variant="outline" size="sm" className="h-8 text-xs font-medium bg-white hover:bg-slate-50" onClick={() => window.print()}>Print Report</Button>
                 </div>
             </header>
 

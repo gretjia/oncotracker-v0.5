@@ -1,12 +1,12 @@
 export interface FormalDatasetRow {
-    "Unnamed: 0"?: string; // Date
-    "Unnamed: 1"?: string; // Phase
-    "Unnamed: 2"?: string; // Cycle
-    "Unnamed: 3"?: string; // Previous Cycle
-    "Unnamed: 4"?: string; // Scheme
-    "Unnamed: 5"?: string; // Event
-    "Unnamed: 6"?: string; // Scheme Detail
-    [key: string]: string | undefined; // Metrics
+    "Unnamed: 0"?: string; // Date (Column A)
+    "Unnamed: 1"?: string; // Phase/项目 (Column B)
+    "Unnamed: 2"?: string; // Cycle/周期 (Column C)
+    "Unnamed: 3"?: string; // Previous Cycle/前序周期 (Column D, often empty)
+    "Unnamed: 4"?: string; // Scheme/方案 (Column E)
+    "Unnamed: 5"?: string; // Event/处置 (Column F)
+    "Unnamed: 6"?: string; // Scheme Detail/方案详情 (Column G)
+    [key: string]: string | undefined; // Metrics start at Column H (Unnamed: 7)
 }
 
 export interface FormalDataset {

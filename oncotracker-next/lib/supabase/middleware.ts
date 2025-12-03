@@ -14,7 +14,6 @@ export async function updateSession(request: NextRequest) {
         {
             cookies: {
                 getAll() {
-                    console.log('Middleware cookies:', request.cookies.getAll().map(c => c.name));
                     return request.cookies.getAll();
                 },
                 setAll(cookiesToSet) {
